@@ -1,9 +1,8 @@
 # # Fichier gitignore # #
 
 # Python
-
+.venv
 __pycache__
 
 # Autres
-
 draft
