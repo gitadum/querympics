@@ -1,0 +1,5 @@
+# # Fichier gitignore # #
+
+# Python
+
+__pycache__
