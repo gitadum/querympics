@@ -31,6 +31,16 @@ medal VARCHAR(6)
 );
 """)
 
+cursor.execute(
+    """
+    CREATE TABLE IF NOT EXISTS region (
+    noc CHAR(3) PRIMARY KEY,
+    region VARCHAR(32),
+    notes VARCHAR(32)
+    );
+    """
+)
+
 connector.commit()
 cursor.close()
 connector.close()
