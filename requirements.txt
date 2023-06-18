@@ -1,4 +1,5 @@
 greenlet==2.0.2
+nameparser==1.1.2
 numpy==1.24.3
 pandas==2.0.2
 psycopg2-binary==2.9.6

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from nameparser import HumanName
 
 def parse_name(full_name: str):
     first_name = ""
@@ -17,14 +18,13 @@ def parse_name(full_name: str):
             first_names.append(name)
     first_name = " ".join(first_names)
     last_name = " ".join(last_names)
-    
+
     if last_name == "":
-        if not re.match("\(\-\w+\)", full_name.split(" ")[-1]):
-            first_name = " ".join(full_name.split(" ")[:-1])
-            last_name = full_name.split(" ")[-1]
+        name = HumanName(full_name)
+        if name.first != "":
+            first_name = name.first
         else:
-            first_name = " ".join(full_name.split(" ")[:-2])
-            last_name = " ".join(full_name.split(" ")[-2:])
-            
-    last_name = last_name.upper()
-    return first_name, last_name
+            first_name = name.title
+        last_name = name.last
+    
+    return first_name.capitalize(), last_name.upper()
