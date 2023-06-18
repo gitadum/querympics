@@ -3,6 +3,8 @@
 # Python
 .venv
 __pycache__
+*.egg
+*.egg-info
 
 # Autres
 draft
