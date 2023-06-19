@@ -6,9 +6,15 @@ import pandas as pd
 
 # Lecture des données
 os.chdir("./data/files/")
-summer = pd.read_csv("Athletes_summer_games.csv")
-winter = pd.read_csv("Athletes_winter_games.csv")
+summer = pd.read_csv("Athletes_summer_games.csv", index_col=0)
+winter = pd.read_csv("Athletes_winter_games.csv", index_col=0)
 region = pd.read_csv("regions.csv", index_col=0)
+
+# # ATHLETES # #
+
+# On réinitialise la colonne d'index (qui n'est pas unique)
+summer = summer.reset_index()
+winter = winter.reset_index()
 
 # # REGIONS # #
 
