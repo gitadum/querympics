@@ -16,6 +16,21 @@ region = pd.read_csv("regions.csv", index_col=0)
 summer = summer.reset_index(drop=True)
 winter = winter.reset_index(drop=True)
 
+# Reconstruction de l'index
+_newindex = lambda idx, letter: letter + str(idx + 1).zfill(6)
+summer["new_index"] = summer.reset_index()["index"].apply(_newindex, letter="S")
+winter["new_index"] = winter.reset_index()["index"].apply(_newindex, letter="W")
+summer = summer.set_index("new_index").rename_axis(index="index")
+winter = winter.set_index("new_index").rename_axis(index="index")
+
+# On s'assure que les colonnes sont les mêmes
+# pour les JO d'été que pour les JO d'hiver
+assert list(summer.columns) == list(winter.columns)
+assert (summer.dtypes == winter.dtypes).all()
+
+# Concaténation des JO d'été et d'hiver
+athlet = pd.concat([summer, winter])
+
 # # REGIONS # #
 
 # Lecture de la table
