@@ -28,3 +28,8 @@ def parse_name(full_name: str):
         last_name = name.last
     
     return first_name.capitalize(), last_name.upper()
+
+def give_short_name(full_name: str) -> str:
+    first_name, last_name = parse_name(full_name)
+    short_name = " ".join([first_name, last_name])
+    return short_name
