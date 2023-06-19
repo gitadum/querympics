@@ -34,5 +34,10 @@ region.loc[region["NOC"] == "UNK", "region"] = "Unknown"
 # On passe le nom des colonnes en minuscule
 region.columns = map(str.lower, region.columns)
 
-# On enregistre la table
-region.to_csv("regions.csv", sep=",", index=None)
+if __name__ == "__main__":
+    # On crée le sous-dossier "/data/files/clean" s'il n'existe pas
+    clean_dir = "clean" # chemin relatif depuis /data/files/
+    if not os.path.exists(clean_dir):
+        os.makedirs(clean_dir)
+    # On enregistre la table
+    region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=None)
