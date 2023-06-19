@@ -15,7 +15,7 @@ db_port = 5432
 engine_path = f"postgresql+psycopg2://{db_usr}:{db_pwd}@{db_host}/{db_name}"
 engine = create_engine(engine_path)
 
-data_dir = "./data/files/"
+data_dir = "./data/files/clean/"
 os.chdir(data_dir)
 
 region = pd.read_csv("regions.csv")
