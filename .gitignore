@@ -6,6 +6,9 @@ __pycache__
 *.egg
 *.egg-info
 
+# IDE
+.vscode
+
 # Autres
 draft
 test
