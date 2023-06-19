@@ -13,8 +13,8 @@ region = pd.read_csv("regions.csv", index_col=0)
 # # ATHLETES # #
 
 # On réinitialise la colonne d'index (qui n'est pas unique)
-summer = summer.reset_index()
-winter = winter.reset_index()
+summer = summer.reset_index(drop=True)
+winter = winter.reset_index(drop=True)
 
 # # REGIONS # #
 
