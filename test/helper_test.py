@@ -5,7 +5,7 @@ import utils.helper
 import pytest
 
 @pytest.mark.parametrize(
-    ("input_s", "expected"),
+    ("input_name", "expected"),
     (
         ("Michael Phelps", ("Michael", "PHELPS")),
         ("Zsuzsanna 'Zsu' Jakabos", ("Zsuzsanna", "JAKABOS")),
