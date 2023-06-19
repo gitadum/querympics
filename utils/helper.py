@@ -5,8 +5,12 @@ import re
 from nameparser import HumanName
 
 def parse_name(full_name: str):
-    first_name = ""
-    last_name = ""
+    
+    parsed_name = {
+        "first": "",
+        "last": ""
+    }
+
     first_names = []
     last_names = []
 
@@ -16,20 +20,25 @@ def parse_name(full_name: str):
             last_names.append(name)
         else:
             first_names.append(name)
-    first_name = " ".join(first_names)
-    last_name = " ".join(last_names)
+    parsed_name["first"] = " ".join(first_names)
+    parsed_name["last"] = " ".join(last_names)
 
-    if last_name == "":
+    if parsed_name["last"] == "":
         name = HumanName(full_name)
         if name.first != "":
-            first_name = name.first
+            parsed_name["first"] = name.first
         else:
-            first_name = name.title
-        last_name = name.last
+            parsed_name["first"] = name.title
+        parsed_name["last"] = name.last
     
-    return first_name.capitalize(), last_name.upper()
+    for k in parsed_name.keys():
+        parsed_name[k] = parsed_name[k].lower()
+
+    return parsed_name
 
 def give_short_name(full_name: str) -> str:
-    first_name, last_name = parse_name(full_name)
-    short_name = " ".join([first_name, last_name])
+    first_name = parse_name(full_name)["first"]
+    last_name = parse_name(full_name)["last"]
+    short_name = " ".join([first_name.capitalize(),
+                           last_name.upper()])
     return short_name
