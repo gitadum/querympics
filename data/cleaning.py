@@ -3,6 +3,7 @@
 
 import os
 import pandas as pd
+from utils.helper import give_short_name
 
 # Lecture des données
 os.chdir("./data/files/")
@@ -30,6 +31,21 @@ assert (summer.dtypes == winter.dtypes).all()
 
 # Concaténation des JO d'été et d'hiver
 athlet = pd.concat([summer, winter])
+
+# Nettoyage des variables de 'athlet'
+
+# Nom
+# On crée une variable 'ShortName',
+# qui contient la forme courte du nom de l'athlète (prénom puis nom)
+athlet["ShortName"] = athlet.Name.apply(give_short_name)
+
+# Age
+# On s'assure que les ages non entiers
+# ne correspondent qu'aux valeurs vides
+athlet["intAge"] = athlet.Age.apply(lambda x: x.is_integer())
+athlet.Age.isna().sum() == athlet[athlet["intAge"] == False].shape[0]
+athlet["Age"] = athlet.Age.astype("Int64")
+athlet.drop(columns=["intAge"], inplace=True)
 
 # # REGIONS # #
 
