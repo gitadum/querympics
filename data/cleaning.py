@@ -3,7 +3,7 @@
 
 import os
 import pandas as pd
-from utils.helper import parse_name, give_short_name
+from utils.helper import parse_name, give_short_name, give_person_id
 
 # Lecture des données
 os.chdir("./data/files/")
@@ -42,13 +42,13 @@ _get_last_name = lambda s: parse_name(s)["last"].upper()
 athlet["FirstName"] = athlet.Name.apply(_get_first_name)
 athlet["LastName"] = athlet.Name.apply(_get_last_name)
 
-athlet["ShortName2"] = athlet["FirstName"] + " " + athlet["LastName"]
-
 # On crée une variable 'ShortName',
 # qui contient la forme courte du nom de l'athlète (prénom puis nom)
-athlet["ShortName"] = athlet.Name.apply(give_short_name)
+athlet["ShortName"] = athlet["FirstName"] + " " + athlet["LastName"]
 
-assert (athlet["ShortName"] == athlet["ShortName2"]).all()
+athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
+                                                            x.LastName,
+                                                            x.Sex), axis=1)
 
 # Age
 # On s'assure que les ages non entiers

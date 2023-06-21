@@ -23,3 +23,15 @@ def test_parse_name(input_name, expected):
 )
 def test_give_short_name(input_name, expected):
     assert utils.helper.give_short_name(input_name) == expected
+
+@pytest.mark.parametrize(
+        ("input_first_name", "input_last_name", "input_gender", "expected"),
+    (
+        ("Alex", "MORGAN", "F", "ALEXMORG0"),
+    )
+)
+def test_give_person_id(input_first_name, input_last_name, input_gender,
+                        expected):
+    assert utils.helper.give_person_id(input_first_name,
+                                       input_last_name,
+                                       input_gender) == expected
