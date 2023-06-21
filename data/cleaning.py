@@ -3,7 +3,7 @@
 
 import os
 import pandas as pd
-from utils.helper import give_short_name
+from utils.helper import parse_name, give_short_name
 
 # Lecture des données
 os.chdir("./data/files/")
@@ -35,9 +35,20 @@ athlet = pd.concat([summer, winter])
 # Nettoyage des variables de 'athlet'
 
 # Nom
+# On crée deux colonnes pour le prénom et le nom
+_get_first_name = lambda s: parse_name(s)["first"].capitalize()
+_get_last_name = lambda s: parse_name(s)["last"].upper()
+
+athlet["FirstName"] = athlet.Name.apply(_get_first_name)
+athlet["LastName"] = athlet.Name.apply(_get_last_name)
+
+athlet["ShortName2"] = athlet["FirstName"] + " " + athlet["LastName"]
+
 # On crée une variable 'ShortName',
 # qui contient la forme courte du nom de l'athlète (prénom puis nom)
 athlet["ShortName"] = athlet.Name.apply(give_short_name)
+
+assert (athlet["ShortName"] == athlet["ShortName2"]).all()
 
 # Age
 # On s'assure que les ages non entiers
