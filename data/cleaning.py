@@ -62,7 +62,8 @@ athlet["YOB"] = athlet["Year"] - athlet["Age"]
 
 athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
                                                             x.LastName,
-                                                            x.Sex), axis=1)
+                                                            x.Sex,
+                                                            x.YOB), axis=1)
 
 # # REGIONS # #
 

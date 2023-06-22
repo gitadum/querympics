@@ -43,8 +43,10 @@ def give_short_name(full_name: str) -> str:
                            last_name.upper()])
     return short_name
 
-def give_person_id(first_name: str, last_name: str, gender: str) -> str:
+def give_person_id(first_name: str, last_name: str,
+                   gender: str, yob: int) -> str:
     gender_code = 0 if gender == "F" else 1
-    person_id = "".join([first_name[:4], last_name[:4], str(gender_code)])
+    person_id = "".join([first_name, last_name,
+                         str(gender_code), str(yob)])
     person_id = person_id.upper()
     return person_id
