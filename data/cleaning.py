@@ -46,10 +46,6 @@ athlet["LastName"] = athlet.Name.apply(_get_last_name)
 # qui contient la forme courte du nom de l'athlète (prénom puis nom)
 athlet["ShortName"] = athlet["FirstName"] + " " + athlet["LastName"]
 
-athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
-                                                            x.LastName,
-                                                            x.Sex), axis=1)
-
 # Age
 # On s'assure que les ages non entiers
 # ne correspondent qu'aux valeurs vides
@@ -57,6 +53,16 @@ athlet["intAge"] = athlet.Age.apply(lambda x: x.is_integer())
 athlet.Age.isna().sum() == athlet[athlet["intAge"] == False].shape[0]
 athlet["Age"] = athlet.Age.astype("Int64")
 athlet.drop(columns=["intAge"], inplace=True)
+
+# Année d'olympiade
+athlet["Year"] = athlet.Year.astype("Int64")
+
+# Calcul de l'année de naissance
+athlet["YOB"] = athlet["Year"] - athlet["Age"]
+
+athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
+                                                            x.LastName,
+                                                            x.Sex), axis=1)
 
 # # REGIONS # #
 
