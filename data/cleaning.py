@@ -73,14 +73,18 @@ athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
 person = athlet.groupby("AthleteID").Games.nunique().reset_index()
 n_person = person.shape[0]
 person['g'] = person.groupby('AthleteID').cumcount()
+athlet.sort_values(by="Year", ascending=False, inplace=True)
 athlet['g'] = athlet.groupby('AthleteID').cumcount()
-person_cols = ["AthleteID", "FirstName", "LastName", "YOB"]
+person_cols = ["AthleteID", "FirstName", "LastName", "YOB", "NOC"]
+
 person = person.merge(athlet[person_cols + ["g"]], on="AthleteID", how="left")
 person = person[person["g_y"] == 0]
 
 assert person.shape[0] == n_person
 
 person = person[person_cols]
+
+athlet.drop(columns=["g"], inplace=True)
 
 # # REGIONS # #
 
