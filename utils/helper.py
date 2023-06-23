@@ -52,7 +52,11 @@ def give_short_name(full_name: str) -> str:
     return short_name
 
 def closest_even(n):
-    rn = round(n)
+    rn = 0
+    try:
+        rn = round(n)
+    except TypeError:
+        return rn
     if not rn % 2:
         return rn
     elif abs(rn +1 - n) < abs(rn -1 - n):

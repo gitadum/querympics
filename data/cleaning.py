@@ -3,7 +3,7 @@
 
 import os
 import pandas as pd
-from utils.helper import parse_name, give_short_name, give_person_id
+from utils.helper import parse_name, give_person_id, closest_even
 
 # Lecture des données
 os.chdir("./data/files/")
@@ -58,7 +58,11 @@ athlet.drop(columns=["intAge"], inplace=True)
 athlet["Year"] = athlet.Year.astype("Int64")
 
 # Calcul de l'année de naissance
-athlet["YOB"] = athlet["Year"] - athlet["Age"]
+athlet["BirthYear"] = athlet["Year"] - athlet["Age"]
+
+# Arrondi à l'année paire la plus proche
+# Pour donner une période de 2 ans qui donne le droit aux erreurs
+athlet["YOB"] = athlet["BirthYear"].apply(closest_even)
 
 athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
                                                             x.LastName,

@@ -43,6 +43,8 @@ def test_give_person_id(input_first_name, input_last_name, input_gender,
     (
         (1955, 1954),
         (1963, 1962),
+        (1943, 1942),
+        (1942, 1942),
     )
 )
 def test_closest_even(input_n, expected):
