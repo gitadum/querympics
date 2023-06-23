@@ -44,6 +44,15 @@ def give_short_name(full_name: str) -> str:
                            last_name.upper()])
     return short_name
 
+def closest_even(n):
+    rn = round(n)
+    if not rn % 2:
+        return rn
+    elif abs(rn +1 - n) < abs(rn -1 - n):
+        return rn + 1
+    else:
+        return rn - 1
+
 def give_person_id(first_name: str, last_name: str,
                    gender: str, yob: int) -> str:
     first_name = first_name.translate(str.maketrans('', '', string.punctuation))

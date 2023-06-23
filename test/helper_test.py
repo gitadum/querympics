@@ -37,3 +37,13 @@ def test_give_person_id(input_first_name, input_last_name, input_gender,
                                        input_last_name,
                                        input_gender,
                                        input_yob) == expected
+
+@pytest.mark.parametrize(
+        ("input_n", "expected"),
+    (
+        (1955, 1954),
+        (1963, 1962),
+    )
+)
+def test_closest_even(input_n, expected):
+    assert utils.helper.closest_even(input_n) == expected
