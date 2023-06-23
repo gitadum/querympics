@@ -71,5 +71,7 @@ def give_person_id(first_name: str, last_name: str,
     gender_code = 0 if gender == "F" else 1
     person_id = "".join([first_name, last_name,
                          str(gender_code), str(yob)])
+    # On supprime les espaces de la chaîne de caractères person_id
+    person_id = person_id.replace(" ", "")
     person_id = person_id.upper()
     return person_id
