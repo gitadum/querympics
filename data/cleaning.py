@@ -75,7 +75,7 @@ n_person = person.shape[0]
 person['g'] = person.groupby('AthleteID').cumcount()
 athlet.sort_values(by="Year", ascending=False, inplace=True)
 athlet['g'] = athlet.groupby('AthleteID').cumcount()
-person_cols = ["AthleteID", "FirstName", "LastName", "BirthYear", "NOC"]
+person_cols = ["AthleteID", "FirstName", "LastName", "Sex", "BirthYear", "NOC"]
 
 person = person.merge(athlet[person_cols + ["g"]], on="AthleteID", how="left")
 person = person[person["g_y"] == 0]
