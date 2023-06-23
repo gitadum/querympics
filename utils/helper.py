@@ -40,8 +40,10 @@ def parse_name(full_name: str):
             parsed_name["first"] = name.title
         parsed_name["last"] = name.last
     
-    for k in parsed_name.keys():
-        parsed_name[k] = parsed_name[k].lower()
+    parsed_name["first"] = ' '.join([s.capitalize()
+                                     for s in parsed_name["first"].split()])
+    parsed_name["last"] = ' '.join([s.capitalize()
+                                    for s in parsed_name["last"].split()])
 
     return parsed_name
 
