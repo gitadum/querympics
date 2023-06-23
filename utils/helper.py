@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import string
 import re
 from nameparser import HumanName
 
@@ -45,6 +46,8 @@ def give_short_name(full_name: str) -> str:
 
 def give_person_id(first_name: str, last_name: str,
                    gender: str, yob: int) -> str:
+    first_name = first_name.translate(str.maketrans('', '', string.punctuation))
+    last_name = last_name.translate(str.maketrans('', '', string.punctuation))
     gender_code = 0 if gender == "F" else 1
     person_id = "".join([first_name, last_name,
                          str(gender_code), str(yob)])
