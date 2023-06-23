@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import string
+import hashlib
 import re
+import string
 from nameparser import HumanName
 
 def parse_name(full_name: str):
@@ -75,3 +76,8 @@ def give_person_id(first_name: str, last_name: str,
     person_id = person_id.replace(" ", "")
     person_id = person_id.upper()
     return person_id
+
+def get_numeric_id(notanum: str, nc: int = 12):
+    id = int(hashlib.sha1(notanum.encode("utf-8")).hexdigest(), 16) % (10 ** nc)
+    id = str(id).zfill(12)
+    return id

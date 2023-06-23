@@ -3,7 +3,8 @@
 
 import os
 import pandas as pd
-from utils.helper import parse_name, give_person_id, closest_even
+from utils.helper import parse_name, closest_even
+from utils.helper import give_person_id, get_numeric_id
 
 # Lecture des données
 os.chdir("./data/files/")
@@ -68,6 +69,8 @@ athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
                                                             x.LastName,
                                                             x.Sex,
                                                             x.YOB), axis=1)
+
+athlet["AthleteID"] = athlet["AthleteID"].apply(get_numeric_id)
 
 # person
 person = athlet.groupby("AthleteID").Games.nunique().reset_index()
