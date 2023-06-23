@@ -87,6 +87,17 @@ assert person.shape[0] == n_person
 
 person = person[person_cols]
 
+_person_cols_renaming = {
+    "AthleteID": "id",
+    "FirstName": "first_name",
+    "LastName": "last_name",
+    "Sex": "gender",
+    "BirthYear": "birth_year",
+    "NOC": "lattest_noc"
+}
+
+person.rename(columns=_person_cols_renaming, inplace=True)
+
 athlet.drop(columns=["g"], inplace=True)
 
 # # REGIONS # #
@@ -112,5 +123,6 @@ if __name__ == "__main__":
     clean_dir = "clean" # chemin relatif depuis /data/files/
     if not os.path.exists(clean_dir):
         os.makedirs(clean_dir)
-    # On enregistre la table
+    # On enregistre les tables
     region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=None)
+    person.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=None)
