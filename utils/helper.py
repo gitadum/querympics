@@ -12,6 +12,13 @@ def parse_name(full_name: str):
         "last": ""
     }
 
+    # Nettoyage des caractères avant le parsing
+    stopchars = """!\"#$%&()*+,./:;<=>?@[\\]^_`{|}~"""
+    spacechars = """-"""
+    full_name = full_name.translate(str.maketrans('', '', stopchars))
+    full_name = full_name.translate(str.maketrans(spacechars, " "))
+    full_name = full_name.strip()
+
     first_names = []
     last_names = []
 
