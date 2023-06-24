@@ -79,6 +79,11 @@ def give_person_id(first_name: str, last_name: str,
     person_id = person_id.upper()
     return person_id
 
+def give_games_id(year: int, season: str):
+    season_letter = "S" if season == "Summer" else "W"
+    games_id = "".join([season_letter, str(year)])
+    return games_id
+
 def get_numeric_id(notanum: str, nc: int = 12):
     id = int(hashlib.sha1(notanum.encode("utf-8")).hexdigest(), 16) % (10 ** nc)
     id = str(id).zfill(12)
