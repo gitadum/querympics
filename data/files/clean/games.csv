@@ -1,0 +1,53 @@
+id,year,season,city
+S1896,1896,Summer,Athina
+S1900,1900,Summer,Paris
+S1904,1904,Summer,St. Louis
+S1906,1906,Summer,Athina
+S1908,1908,Summer,London
+S1912,1912,Summer,Stockholm
+S1920,1920,Summer,Antwerpen
+S1924,1924,Summer,Paris
+W1924,1924,Winter,Chamonix
+S1928,1928,Summer,Amsterdam
+W1928,1928,Winter,Sankt Moritz
+S1932,1932,Summer,Los Angeles
+W1932,1932,Winter,Lake Placid
+S1936,1936,Summer,Berlin
+W1936,1936,Winter,Garmisch-Partenkirchen
+S1948,1948,Summer,London
+W1948,1948,Winter,Sankt Moritz
+S1952,1952,Summer,Helsinki
+W1952,1952,Winter,Oslo
+S1956,1956,Summer,Melbourne
+W1956,1956,Winter,Cortina d'Ampezzo
+S1960,1960,Summer,Roma
+W1960,1960,Winter,Squaw Valley
+S1964,1964,Summer,Tokyo
+W1964,1964,Winter,Innsbruck
+S1968,1968,Summer,Mexico City
+W1968,1968,Winter,Grenoble
+S1972,1972,Summer,Munich
+W1972,1972,Winter,Sapporo
+S1976,1976,Summer,Montreal
+W1976,1976,Winter,Innsbruck
+S1980,1980,Summer,Moskva
+W1980,1980,Winter,Lake Placid
+S1984,1984,Summer,Los Angeles
+W1984,1984,Winter,Sarajevo
+S1988,1988,Summer,Seoul
+W1988,1988,Winter,Calgary
+S1992,1992,Summer,Barcelona
+W1992,1992,Winter,Albertville
+W1994,1994,Winter,Lillehammer
+S1996,1996,Summer,Atlanta
+W1998,1998,Winter,Nagano
+S2000,2000,Summer,Sydney
+W2002,2002,Winter,Salt Lake City
+S2004,2004,Summer,Athina
+W2006,2006,Winter,Torino
+S2008,2008,Summer,Beijing
+W2010,2010,Winter,Vancouver
+S2012,2012,Summer,London
+W2014,2014,Winter,Sochi
+S2016,2016,Summer,Rio de Janeiro
+S2020,2020,Summer,Tokyo

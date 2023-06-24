@@ -21,9 +21,12 @@ os.chdir(data_dir)
 CREATE_REGION = False
 TRUNCATE_REGION = False
 FILL_REGION = False
-CREATE_ATHLETE = True
-TRUNCATE_ATHLETE = True
-FILL_ATHLETE = True
+CREATE_ATHLETE = False
+TRUNCATE_ATHLETE = False
+FILL_ATHLETE = False
+CREATE_GAMES = True
+TRUNCATE_GAMES = False
+FILL_GAMES = True
 
 # Connexion à la base de données PostGre
 connector = psycopg2.connect(host=db_host, dbname=db_name,
@@ -41,6 +44,16 @@ if CREATE_ATHLETE:
     cursor.execute(create_athlete_db)
     connector.commit()
     print("Created `athlete`.")
+
+if CREATE_GAMES:
+    print("Crating `games`...")
+    with open("../../base/games.create.sql") as f:
+        create_games_db = f.read()
+    create_games_db = create_games_db.split(";")[0]
+    #print(create_games_db)
+    cursor.execute(create_games_db)
+    connector.commit()
+    print("Created `games`.")
 
 if CREATE_REGION:
     print("Creating `region`...")
@@ -61,6 +74,15 @@ if TRUNCATE_ATHLETE:
     connector.commit()
     print("Truncated `athlete`.")
 
+if TRUNCATE_GAMES:
+    print("Truncating `games`...")
+    with open("../../base/games.truncate.sql") as f:
+        truncate_games_db = f.read()
+    truncate_games_db = truncate_games_db.split(";")[0]
+    cursor.execute(truncate_games_db)
+    connector.commit()
+    print("Truncated `games`.")
+
 if TRUNCATE_REGION:
     print("Truncating `region`...")
     with open("../../base/region.truncate.sql") as f:
@@ -69,6 +91,14 @@ if TRUNCATE_REGION:
     cursor.execute(truncate_region_db)
     connector.commit()
     print("Truncated `region`.")
+
+if FILL_GAMES:
+    # Remplissage de la table games
+    print("Starting loading records into `games`...")
+    games = pd.read_csv("games.csv")
+    games.to_sql("games", engine, if_exists="append", index=False)
+    connector.commit()
+    print("Done with loading records into `games`.")
 
 if FILL_REGION:
     # Remplissage de la table region

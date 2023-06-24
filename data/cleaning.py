@@ -140,6 +140,15 @@ assert (games["Games"].apply(lambda s: int(s.split(" ")[0]))
 assert (games["Games"].apply(lambda s: s.split(" ")[1])
         == games["Season"]).all()
 games["index"] = games.apply(lambda x: give_games_id(x.Year, x.Season), axis=1)
+games["Season"] = games["Season"].astype("category")
+
+_games_cols = ["index", "Year", "Season", "City"]
+games = games[_games_cols]
+
+games.rename(columns={"index": "id"}, inplace=True)
+# On passe le nom des colonnes en minuscule
+games.columns = map(str.lower, games.columns)
+games.set_index("id", inplace=True)
 
 # # REGIONS # #
 
@@ -167,4 +176,4 @@ if __name__ == "__main__":
     # On enregistre les tables
     region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=None)
     person.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=True)
-    games.to_csv(f"{clean_dir}/games.csv", sep=",", index=None)
+    games.to_csv(f"{clean_dir}/games.csv", sep=",", index=True)
