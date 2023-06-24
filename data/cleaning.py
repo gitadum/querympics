@@ -153,6 +153,21 @@ games.rename(columns={"GamesID": "ID"}, inplace=True)
 games.columns = map(str.lower, games.columns)
 games.set_index("id", inplace=True)
 
+# # RESULTS # #
+
+result = athlet.copy()
+_result_cols = ["GamesID", "Sport", "Event", "AthleteID", "NOC", "Medal"]
+result = result[_result_cols]
+
+_medal_names = {"Gold": "G", "Silver": "S", "Bronze": "B"}
+result["Medal"] = result["Medal"].replace(_medal_names)
+result["Medal"] = result["Medal"].astype("category")
+
+result.rename(columns={"AthleteID": "Athlete",
+                       "GamesID": "Games"}, inplace=True)
+result.columns = map(str.lower, result.columns)
+result.rename_axis(index="id", inplace=True)
+
 # # REGIONS # #
 
 # On vérifie que les valeurs de la colonne "NOC" sont uniques
@@ -178,3 +193,4 @@ if __name__ == "__main__":
     region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=True)
     person.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=True)
     games.to_csv(f"{clean_dir}/games.csv", sep=",", index=True)
+    result.to_csv(f"{clean_dir}/results.csv", sep=",", index=True)

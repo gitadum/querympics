@@ -28,6 +28,9 @@ FILL_GAMES = False
 CREATE_REGION = False
 TRUNCATE_REGION = False
 FILL_REGION = False
+CREATE_RESULT = True
+TRUNCATE_RESULT = False
+FILL_RESULT = True
 
 # Connexion à la base de données PostGre
 connector = psycopg2.connect(host=db_host, dbname=db_name,
@@ -50,6 +53,10 @@ if CREATE_REGION:
     create_region = "./base/region.create.sql"
     database.create_table("region", create_region, connector, cursor)
 
+if CREATE_RESULT:
+    create_result = "./base/result.create.sql"
+    database.create_table("result", create_result, connector, cursor)
+
 # Troncature des tables
 if TRUNCATE_ATHLETE:
     truncate_athlete = "./base/athlete.truncate.sql"
@@ -62,6 +69,10 @@ if TRUNCATE_GAMES:
 if TRUNCATE_REGION:
     truncate_region = "./base/region.truncate.sql"
     database.truncate_table("region", truncate_region, connector, cursor)
+
+if TRUNCATE_RESULT:
+    truncate_result = "./base/result.truncate.sql"
+    database.truncate_table("result", truncate_result, connector, cursor)
 
 # Remplissage des tables avec les CSV issus du nettoyage
 if FILL_ATHLETE:
@@ -83,6 +94,14 @@ if FILL_REGION:
     database.fill_table_from_csv("region", region_file_path,
                                  connector, engine,
                                  verbose=True)
+
+if FILL_RESULT:
+    result_file_path = "./files/clean/results.csv"
+    database.fill_table_from_csv("result", result_file_path,
+                                 connector, engine,
+                                 verbose=True,
+                                 fill_by_chuncks=True,
+                                 n_chunk=10000)
 
 cursor.close()
 connector.close()
