@@ -19,15 +19,15 @@ engine = create_engine(engine_path)
 data_dir = "./data/"
 os.chdir(data_dir)
 
-CREATE_REGION = False
-TRUNCATE_REGION = False
-FILL_REGION = False
 CREATE_ATHLETE = False
-TRUNCATE_ATHLETE = True
-FILL_ATHLETE = True
+TRUNCATE_ATHLETE = False
+FILL_ATHLETE = False
 CREATE_GAMES = False
 TRUNCATE_GAMES = False
 FILL_GAMES = False
+CREATE_REGION = False
+TRUNCATE_REGION = False
+FILL_REGION = False
 
 # Connexion à la base de données PostGre
 connector = psycopg2.connect(host=db_host, dbname=db_name,
@@ -40,28 +40,28 @@ cursor = connector.cursor()
 # Création des tables
 if CREATE_ATHLETE:
     create_athlete = "./base/athlete.create.sql"
-    database.create("athlete", create_athlete, connector, cursor)
+    database.create_table("athlete", create_athlete, connector, cursor)
 
 if CREATE_GAMES:
     create_games = "./base/games.create.sql"
-    database.create("games", create_games, connector, cursor)
+    database.create_table("games", create_games, connector, cursor)
 
 if CREATE_REGION:
     create_region = "./base/region.create.sql"
-    database.create("region", create_region, connector, cursor)
+    database.create_table("region", create_region, connector, cursor)
 
 # Troncature des tables
 if TRUNCATE_ATHLETE:
     truncate_athlete = "./base/athlete.truncate.sql"
-    database.truncate("athlete", truncate_athlete, connector, cursor)
+    database.truncate_table("athlete", truncate_athlete, connector, cursor)
 
 if TRUNCATE_GAMES:
     truncate_games = "./base/games.truncate.sql"
-    database.truncate("games", truncate_games, connector, cursor)
+    database.truncate_table("games", truncate_games, connector, cursor)
 
 if TRUNCATE_REGION:
     truncate_region = "./base/region.truncate.sql"
-    database.truncate("region", truncate_region, connector, cursor)
+    database.truncate_table("region", truncate_region, connector, cursor)
 
 # Remplissage des tables avec les CSV issus du nettoyage
 if FILL_ATHLETE:

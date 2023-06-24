@@ -3,11 +3,11 @@
 
 import pandas as pd
 
-def create(db_name,
-           query_file_path,
-           connector,
-           cursor,
-           verbose = True):
+def create_table(db_name,
+                 query_file_path,
+                 connector,
+                 cursor,
+                 verbose = True):
     print(f"Crating `{db_name}`...") if verbose else None
     with open(query_file_path, "r") as f:
         query = f.read()
@@ -16,11 +16,11 @@ def create(db_name,
     connector.commit()
     print(f"Created `{db_name}`.") if verbose else None
 
-def truncate(db_name,
-             query_file_path,
-             connector,
-             cursor,
-             verbose = True):
+def truncate_table(db_name,
+                   query_file_path,
+                   connector,
+                   cursor,
+                   verbose = True):
     print(f"Truncating `{db_name}`...") if verbose else None
     with open(query_file_path, "r") as f:
         query = f.read()
