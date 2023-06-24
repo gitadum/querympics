@@ -152,9 +152,6 @@ games.set_index("id", inplace=True)
 
 # # REGIONS # #
 
-# Lecture de la table
-region = pd.read_csv("regions.csv", index_col=0)
-
 # On vérifie que les valeurs de la colonne "NOC" sont uniques
 # Ça sera la clé primaire de la table
 assert region.shape[0] == region.NOC.nunique()
@@ -167,6 +164,7 @@ region.loc[region["NOC"] == "UNK", "region"] = "Unknown"
 
 # On passe le nom des colonnes en minuscule
 region.columns = map(str.lower, region.columns)
+region.set_index("noc", inplace=True)
 
 if __name__ == "__main__":
     # On crée le sous-dossier "/data/files/clean" s'il n'existe pas
@@ -174,6 +172,6 @@ if __name__ == "__main__":
     if not os.path.exists(clean_dir):
         os.makedirs(clean_dir)
     # On enregistre les tables
-    region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=None)
+    region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=True)
     person.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=True)
     games.to_csv(f"{clean_dir}/games.csv", sep=",", index=True)
