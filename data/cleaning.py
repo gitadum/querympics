@@ -105,6 +105,8 @@ person = person.join(athlet
                      .sort_values(by="Year")
                      .groupby(["AthleteID"])["NOC"].last())
 
+person = person.reset_index()
+
 _person_cols = ["AthleteID", "FirstName", "LastName", "Sex", "BirthYear", "NOC"]
 person = person[_person_cols]
 
@@ -118,6 +120,8 @@ _person_cols_renaming = {
 }
 
 person.rename(columns=_person_cols_renaming, inplace=True)
+person.set_index("id", inplace=True)
+
 
 # # REGIONS # #
 
@@ -144,4 +148,4 @@ if __name__ == "__main__":
         os.makedirs(clean_dir)
     # On enregistre les tables
     region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=None)
-    person.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=None)
+    person.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=True)
