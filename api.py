@@ -5,3 +5,7 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+#get
+@app.get("/")
+async def greetings():
+    return {"greetings": "Welcome to Querylimpics!"}
