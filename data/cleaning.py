@@ -73,6 +73,13 @@ athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
 
 athlet["AthleteID"] = athlet["AthleteID"].apply(get_numeric_id)
 
+# Création d'un id par olympiade
+assert (athlet["Games"].apply(lambda s: int(s.split(" ")[0]))
+        == athlet["Year"]).all()
+assert (athlet["Games"].apply(lambda s: s.split(" ")[1])
+        == athlet["Season"]).all()
+athlet["GamesID"] = athlet.apply(lambda x: give_games_id(x.Year, x.Season), axis=1)
+
 # # PERSON # #
 
 # On commence par regrouper tous athlètes sous le même id d'athlète
@@ -128,24 +135,20 @@ athlet.loc[athlet["Games"] == "1956 Summer", "City"] = \
                                                                  "Melbourne")
 
 games = (
-    athlet.groupby("Games")["Year"].unique().explode().to_frame().join(
+    athlet.groupby("Games")["GamesID"].unique().explode().to_frame().join(
+    athlet.groupby("Games")["Year"].unique().explode().to_frame()).join(
     athlet.groupby("Games")["Season"].unique().explode().to_frame()).join(
     athlet.groupby("Games")["City"].unique().explode().to_frame())
     .reset_index())
 
 assert athlet["Games"].nunique() == games.shape[0]
 
-assert (games["Games"].apply(lambda s: int(s.split(" ")[0]))
-        == games["Year"]).all()
-assert (games["Games"].apply(lambda s: s.split(" ")[1])
-        == games["Season"]).all()
-games["index"] = games.apply(lambda x: give_games_id(x.Year, x.Season), axis=1)
 games["Season"] = games["Season"].astype("category")
 
-_games_cols = ["index", "Year", "Season", "City"]
+_games_cols = ["GamesID", "Year", "Season", "City"]
 games = games[_games_cols]
 
-games.rename(columns={"index": "id"}, inplace=True)
+games.rename(columns={"GamesID": "ID"}, inplace=True)
 # On passe le nom des colonnes en minuscule
 games.columns = map(str.lower, games.columns)
 games.set_index("id", inplace=True)
