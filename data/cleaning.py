@@ -87,6 +87,13 @@ person = person.join(athlet.groupby("AthleteID")["FirstName"].unique().to_frame(
 assert person["FirstName"].apply(len).all() == 1
 person["FirstName"] = person["FirstName"].apply(lambda l: l[0])
 
+# Genre
+person = person.join(athlet.groupby("AthleteID")["Sex"].unique().to_frame())
+assert person["Sex"].apply(len).all() == 1
+person["Sex"] = person["Sex"].apply(lambda l: l[0])
+person["Sex"] = person["Sex"].astype("category")
+
+# Age
 person = person.join(athlet.groupby("AthleteID")["BirthYear"].mean().to_frame())
 person["BirthYear"].fillna(0, inplace=True)
 person["BirthYear"] = person["BirthYear"].apply(lambda y: round(y, 0))
@@ -97,6 +104,9 @@ person["BirthYear"].replace(0, pd.NA, inplace=True)
 person = person.join(athlet
                      .sort_values(by="Year")
                      .groupby(["AthleteID"])["NOC"].last())
+
+_person_cols = ["AthleteID", "FirstName", "LastName", "Sex", "BirthYear", "NOC"]
+person = person[_person_cols]
 
 _person_cols_renaming = {
     "AthleteID": "id",
