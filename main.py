@@ -18,7 +18,10 @@ engine = create_engine(engine_path)
 data_dir = "./data/files/clean/"
 os.chdir(data_dir)
 
-region = pd.read_csv("regions.csv")
+CREATE_REGION = False
+FILL_REGION = False
+CREATE_ATHLETE = False
+FILL_ATHLETE = True
 
 # Connexion à la base de données PostGre
 connector = psycopg2.connect(host=db_host, dbname=db_name,
@@ -26,38 +29,38 @@ connector = psycopg2.connect(host=db_host, dbname=db_name,
                              port=db_port)
 cursor = connector.cursor()
 
-# Ici on lancera les requêtes qui iront bien
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS athlete (
+# Lancement des requêtes
+if CREATE_ATHLETE:
+    with open("../../base/athlete.create.sql") as f:
+        create_athlete_db = f.read()
+    create_athlete_db = create_athlete_db.split(";")[0]
+    print(create_athlete_db)
+    cursor.execute(create_athlete_db)
 
-id VARCHAR(7) PRIMARY KEY,
-name VARCHAR(128),
-sex CHAR,
-age INT,
-team VARCHAR(64),
-noc VARCHAR(3),
-games VARCHAR(11),
-year INT,
-season VARCHAR(6),
-city VARCHAR(32),
-event VARCHAR(128),
-medal VARCHAR(6)
+if CREATE_REGION:
+    with open("../../base/region.create.sql") as f:
+        create_region_db = f.read()
+    create_region_db = create_region_db.split(";")[0]
+    print(create_region_db)
+    cursor.execute(create_region_db)
 
-);
-""")
+if FILL_REGION:
+    # Remplissage de la table region
+    region = pd.read_csv("regions.csv")
+    region.to_sql("region", engine, if_exists="append", index=False)
 
-cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS region (
-    noc CHAR(3) PRIMARY KEY,
-    region VARCHAR(32),
-    notes VARCHAR(32)
-    );
-    """
-)
-
-# Remplissage de la table region
-region.to_sql("region", engine, if_exists="append", index=False)
+if FILL_ATHLETE:
+    # Remplissage de la table athlete par lot
+    # la taille d'un lot est déterminé par "n_chunk"
+    n_chunk = 10000
+    i = 1
+    n = 15
+    print("Starting loading records into `athlete`...")
+    for chunk in pd.read_csv("athletes.csv", chunksize=n_chunk):
+        chunk.to_sql("athlete", engine, if_exists="append", index=False)
+        print(f"loaded {n_chunk} records into athlete ({i}/{n}).")
+        i += 1
+    print("Done with loading records into `athlete`.")
 
 connector.commit()
 cursor.close()
