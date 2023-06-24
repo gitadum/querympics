@@ -4,7 +4,7 @@
 import os
 import pandas as pd
 from utils.helper import parse_name, closest_even
-from utils.helper import give_person_id, get_numeric_id
+from utils.helper import give_person_id, give_games_id, get_numeric_id
 
 # Lecture des données
 os.chdir("./data/files/")
@@ -75,7 +75,6 @@ athlet["AthleteID"] = athlet["AthleteID"].apply(get_numeric_id)
 
 # # PERSON # #
 
-
 # On commence par regrouper tous athlètes sous le même id d'athlète
 # Nom de famille
 person = (athlet.groupby("AthleteID")["LastName"].unique().to_frame())
@@ -122,6 +121,25 @@ _person_cols_renaming = {
 person.rename(columns=_person_cols_renaming, inplace=True)
 person.set_index("id", inplace=True)
 
+# # GAMES # #
+
+athlet.loc[athlet["Games"] == "1956 Summer", "City"] = \
+    athlet.loc[athlet["Games"] == "1956 Summer", "City"].replace("Stockholm",
+                                                                 "Melbourne")
+
+games = (
+    athlet.groupby("Games")["Year"].unique().explode().to_frame().join(
+    athlet.groupby("Games")["Season"].unique().explode().to_frame()).join(
+    athlet.groupby("Games")["City"].unique().explode().to_frame())
+    .reset_index())
+
+assert athlet["Games"].nunique() == games.shape[0]
+
+assert (games["Games"].apply(lambda s: int(s.split(" ")[0]))
+        == games["Year"]).all()
+assert (games["Games"].apply(lambda s: s.split(" ")[1])
+        == games["Season"]).all()
+games["index"] = games.apply(lambda x: give_games_id(x.Year, x.Season), axis=1)
 
 # # REGIONS # #
 
@@ -149,3 +167,4 @@ if __name__ == "__main__":
     # On enregistre les tables
     region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=None)
     person.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=True)
+    games.to_csv(f"{clean_dir}/games.csv", sep=",", index=None)
