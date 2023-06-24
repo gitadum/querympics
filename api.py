@@ -5,7 +5,17 @@ import uvicorn
 from fastapi import FastAPI
 from typing import Optional
 
+from olympics import ResultIn, ResultOut
+
 app = FastAPI()
+
+@app.post("/result/",
+          response_model=ResultOut,
+          response_model_exclude={"password"})
+async def make_result(new_result: ResultIn):
+    # db write completed
+    assert new_result.password == "dummypassw0rd"
+    return new_result
 
 #get
 @app.get("/")

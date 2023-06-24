@@ -4,15 +4,24 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class Result(BaseModel):
+class ResultIn(BaseModel):
     id : str
     games: str
     sport: str
     event: Optional[str]
     athlete: str
     noc: str
-    medal: Optional[str]
+    medal: Optional[str] = None
+    password: str
 
+class ResultOut(BaseModel):
+    id : str
+    games: str
+    sport: str
+    event: Optional[str]
+    athlete: str
+    noc: str
+    medal: Optional[str] = None
 
 class Athlete(BaseModel):
     first_name: str
