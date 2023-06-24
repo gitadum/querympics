@@ -63,29 +63,40 @@ athlet["BirthYear"] = athlet["Year"] - athlet["Age"]
 
 # Arrondi à l'année paire la plus proche
 # Pour donner une période de 2 ans qui donne le droit aux erreurs
-athlet["YOB"] = athlet["BirthYear"].apply(closest_even)
+athlet["ApproxBirthYear"] = athlet["BirthYear"].apply(closest_even)
 
 athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
                                                             x.LastName,
                                                             x.Sex,
-                                                            x.YOB), axis=1)
+                                                            x.ApproxBirthYear),
+                                                            axis=1)
 
 athlet["AthleteID"] = athlet["AthleteID"].apply(get_numeric_id)
 
-# person
-person = athlet.groupby("AthleteID").Games.nunique().reset_index()
-n_person = person.shape[0]
-person['g'] = person.groupby('AthleteID').cumcount()
-athlet.sort_values(by="Year", ascending=False, inplace=True)
-athlet['g'] = athlet.groupby('AthleteID').cumcount()
-person_cols = ["AthleteID", "FirstName", "LastName", "Sex", "BirthYear", "NOC"]
+# # PERSON # #
 
-person = person.merge(athlet[person_cols + ["g"]], on="AthleteID", how="left")
-person = person[person["g_y"] == 0]
 
-assert person.shape[0] == n_person
+# On commence par regrouper tous athlètes sous le même id d'athlète
+# Nom de famille
+person = (athlet.groupby("AthleteID")["LastName"].unique().to_frame())
+assert person["LastName"].apply(len).all() == 1
+person["LastName"] = person["LastName"].apply(lambda l: l[0])
 
-person = person[person_cols]
+# Prénom
+person = person.join(athlet.groupby("AthleteID")["FirstName"].unique().to_frame())
+assert person["FirstName"].apply(len).all() == 1
+person["FirstName"] = person["FirstName"].apply(lambda l: l[0])
+
+person = person.join(athlet.groupby("AthleteID")["BirthYear"].mean().to_frame())
+person["BirthYear"].fillna(0, inplace=True)
+person["BirthYear"] = person["BirthYear"].apply(lambda y: round(y, 0))
+person["BirthYear"] = person["BirthYear"].astype("Int64")
+person["BirthYear"].replace(0, pd.NA, inplace=True)
+
+# Dernier NOC
+person = person.join(athlet
+                     .sort_values(by="Year")
+                     .groupby(["AthleteID"])["NOC"].last())
 
 _person_cols_renaming = {
     "AthleteID": "id",
@@ -97,8 +108,6 @@ _person_cols_renaming = {
 }
 
 person.rename(columns=_person_cols_renaming, inplace=True)
-
-athlet.drop(columns=["g"], inplace=True)
 
 # # REGIONS # #
 
