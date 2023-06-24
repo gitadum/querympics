@@ -12,3 +12,13 @@ def create(db_name,
     cursor.execute(query)
     connector.commit()
     print(f"Created `{db_name}`.") if verbose else None
+
+def truncate(db_name,
+             query,
+             connector: psycopg2.connection,
+             cursor: psycopg2.cursor,
+             verbose = True):
+    print(f"Truncating `{db_name}`...") if verbose else None
+    cursor.execute(query)
+    connector.commit()
+    print("Truncated `{db_name}`.") if verbose else None
