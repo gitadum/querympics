@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
+from utils import database
 
 db_usr = "sqladum"
 db_pwd = "dummypassw0rd"
@@ -15,18 +16,18 @@ db_port = 5432
 engine_path = f"postgresql+psycopg2://{db_usr}:{db_pwd}@{db_host}/{db_name}"
 engine = create_engine(engine_path)
 
-data_dir = "./data/files/clean/"
+data_dir = "./data/"
 os.chdir(data_dir)
 
 CREATE_REGION = False
 TRUNCATE_REGION = False
 FILL_REGION = False
 CREATE_ATHLETE = False
-TRUNCATE_ATHLETE = False
-FILL_ATHLETE = False
-CREATE_GAMES = True
+TRUNCATE_ATHLETE = True
+FILL_ATHLETE = True
+CREATE_GAMES = False
 TRUNCATE_GAMES = False
-FILL_GAMES = True
+FILL_GAMES = False
 
 # Connexion à la base de données PostGre
 connector = psycopg2.connect(host=db_host, dbname=db_name,
@@ -35,92 +36,53 @@ connector = psycopg2.connect(host=db_host, dbname=db_name,
 cursor = connector.cursor()
 
 # Lancement des requêtes
+
+# Création des tables
 if CREATE_ATHLETE:
-    print("Crating `athlete`...")
-    with open("../../base/athlete.create.sql") as f:
-        create_athlete_db = f.read()
-    create_athlete_db = create_athlete_db.split(";")[0]
-    #print(create_athlete_db)
-    cursor.execute(create_athlete_db)
-    connector.commit()
-    print("Created `athlete`.")
+    create_athlete = "./base/athlete.create.sql"
+    database.create("athlete", create_athlete, connector, cursor)
 
 if CREATE_GAMES:
-    print("Crating `games`...")
-    with open("../../base/games.create.sql") as f:
-        create_games_db = f.read()
-    create_games_db = create_games_db.split(";")[0]
-    #print(create_games_db)
-    cursor.execute(create_games_db)
-    connector.commit()
-    print("Created `games`.")
+    create_games = "./base/games.create.sql"
+    database.create("games", create_games, connector, cursor)
 
 if CREATE_REGION:
-    print("Creating `region`...")
-    with open("../../base/region.create.sql") as f:
-        create_region_db = f.read()
-    create_region_db = create_region_db.split(";")[0]
-    #print(create_region_db)
-    cursor.execute(create_region_db)
-    connector.commit()
-    print("Created `region`.")
+    create_region = "./base/region.create.sql"
+    database.create("region", create_region, connector, cursor)
 
+# Troncature des tables
 if TRUNCATE_ATHLETE:
-    print("Truncating `athlete`...")
-    with open("../../base/athlete.truncate.sql") as f:
-        truncate_athlete_db = f.read()
-    truncate_athlete_db = truncate_athlete_db.split(";")[0]
-    cursor.execute(truncate_athlete_db)
-    connector.commit()
-    print("Truncated `athlete`.")
+    truncate_athlete = "./base/athlete.truncate.sql"
+    database.truncate("athlete", truncate_athlete, connector, cursor)
 
 if TRUNCATE_GAMES:
-    print("Truncating `games`...")
-    with open("../../base/games.truncate.sql") as f:
-        truncate_games_db = f.read()
-    truncate_games_db = truncate_games_db.split(";")[0]
-    cursor.execute(truncate_games_db)
-    connector.commit()
-    print("Truncated `games`.")
+    truncate_games = "./base/games.truncate.sql"
+    database.truncate("games", truncate_games, connector, cursor)
 
 if TRUNCATE_REGION:
-    print("Truncating `region`...")
-    with open("../../base/region.truncate.sql") as f:
-        truncate_region_db = f.read()
-    truncate_region_db = truncate_region_db.split(";")[0]
-    cursor.execute(truncate_region_db)
-    connector.commit()
-    print("Truncated `region`.")
+    truncate_region = "./base/region.truncate.sql"
+    database.truncate("region", truncate_region, connector, cursor)
+
+# Remplissage des tables avec les CSV issus du nettoyage
+if FILL_ATHLETE:
+    athlete_file_path = "./files/clean/athletes.csv"
+    database.fill_table_from_csv("athlete", athlete_file_path,
+                                 connector, engine,
+                                 verbose=True,
+                                 fill_by_chuncks=True,
+                                 n_chunk=10000)
 
 if FILL_GAMES:
-    # Remplissage de la table games
-    print("Starting loading records into `games`...")
-    games = pd.read_csv("games.csv")
-    games.to_sql("games", engine, if_exists="append", index=False)
-    connector.commit()
-    print("Done with loading records into `games`.")
+    games_file_path = "./files/clean/games.csv"
+    database.fill_table_from_csv("games", games_file_path,
+                                 connector, engine,
+                                 verbose=True)
 
 if FILL_REGION:
-    # Remplissage de la table region
-    print("Starting loading records into `athlete`...")
-    region = pd.read_csv("regions.csv")
-    region.to_sql("region", engine, if_exists="append", index=False)
-    connector.commit()
-    print("Done with loading records into `athlete`.")
-
-if FILL_ATHLETE:
-    # Remplissage de la table athlete par lot
-    # la taille d'un lot est déterminé par "n_chunk"
-    n_chunk = 10000
-    i = 1
-    n = 15
-    print("Starting loading records into `athlete`...")
-    for chunk in pd.read_csv("athletes.csv", chunksize=n_chunk):
-        chunk.to_sql("athlete", engine, if_exists="append", index=False)
-        print(f"loaded {n_chunk} records into athlete ({i}/{n}).")
-        i += 1
-    connector.commit()
-    print("Done with loading records into `athlete`.")
+    region_file_path = "./files/clean/regions.csv"
+    database.fill_table_from_csv("region", region_file_path,
+                                 connector, engine,
+                                 verbose=True)
 
 cursor.close()
 connector.close()
