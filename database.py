@@ -1,10 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from typing import List
-
-from fastapi import FastAPI, Depends
-from pydantic import BaseModel, Field
 import databases
 import sqlalchemy
 
@@ -18,32 +14,26 @@ db_name = "olympics"
 db_host = "localhost"
 db_port = 5432
 
-DATABASE_URL = f"postgres://{db_usr}:{db_pwd}@{db_host}:{db_port}/test"
+DATABASE_URL = f"postgres://{db_usr}:{db_pwd}@{db_host}:{db_port}/{db_name}"
 
 metadata = sqlalchemy.MetaData()
 database = databases.Database(DATABASE_URL)
 
-register = sqlalchemy.table(
-    "register",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("name", sqlalchemy.String(255)),
-    sqlalchemy.Column("date_created", sqlalchemy.DateTime())
-)
+def main():
+    # Result
+    result = sqlalchemy.table(
+        "result",
+        metadata,
+        sqlalchemy.Column("id", sqlalchemy.String(7), primary_key=True),
+        sqlalchemy.Column("games", sqlalchemy.String(5)),
+        sqlalchemy.Column("sport", sqlalchemy.String(32)),
+        sqlalchemy.Column("event", sqlalchemy.String(128)),
+        sqlalchemy.Column("athlete", sqlalchemy.String(12)),
+        sqlalchemy.Column("noc", sqlalchemy.String(3)),
+        sqlalchemy.Column("medal", sqlalchemy.String(1))
+        )
+    engine = sqlalchemy.create_engine(DATABASE_URL)
+    metadata.create_all(engine)
 
-engine = sqlalchemy.create_engine(DATABASE_URL)
-
-metadata.create_all(engine)
-
-
-# # API # #
-
-app = FastAPI()
-
-@app.on_event("startup")
-async def connect():
-    await database.connect()
-
-@app.on_event("shutdown")
-async def disconnect():
-    await database.disconnect()
+if __name__ == "__main__":
+    main()

@@ -7,18 +7,20 @@ from models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from pydantic import BaseModel
 
-from data.db import db_host, db_name, db_usr, db_pwd, db_port
-from psycopg2 import connect
-
-# Connexion à la base de données PostGre
-connector = connect(host=db_host, dbname=db_name, user=db_usr, password=db_pwd,
-                    port=db_port)
-db_url = f"postgres://{db_usr}:{db_pwd}@{db_host}:{db_port}/{db_name}"
+from database import DATABASE_URL, database
 
 class Message(BaseModel):
     message: str = ""
 
 app = FastAPI()
+
+@app.on_event("startup")
+async def connect():
+    await database.connect()
+
+@app.on_event("shutdown")
+async def disconnect():
+    await database.disconnect()
 
 # ### MESSAGE D'ACCEUIL ### #
 
@@ -83,7 +85,7 @@ async def delete_an_athlete(id: str):
 # Connexion à la base de données
 register_tortoise(
     app,
-    db_url=db_url,
+    db_url=DATABASE_URL,
     modules={"models": ["models"]},
     generate_schemas=True,
     add_exception_handlers=True
