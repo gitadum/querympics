@@ -3,7 +3,11 @@
 
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
-from pydantic import Extra
+from pydantic import BaseModel, Extra
+
+class Message(BaseModel):
+    message: str = ""
+
 
 class Result(models.Model):
 
