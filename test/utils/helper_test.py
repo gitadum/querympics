@@ -7,9 +7,9 @@ import pytest
 @pytest.mark.parametrize(
     ("input_name", "expected"),
     (
-        ("Michael Phelps", {"first": "michael", "last": "phelps"}),
-        ("Zsuzsanna 'Zsu' Jakabos", {"first": "zsuzsanna", "last": "jakabos"}),
-        ("JAKABOS Zsuzsanna", {"first": "zsuzsanna", "last": "jakabos"}),
+        ("Michael Phelps", {"first": "Michael", "last": "Phelps"}),
+        ("Zsuzsanna 'Zsu' Jakabos", {"first": "Zsuzsanna", "last": "Jakabos"}),
+        ("JAKABOS Zsuzsanna", {"first": "Zsuzsanna", "last": "Jakabos"}),
     )
 )
 def test_parse_name(input_name, expected):
