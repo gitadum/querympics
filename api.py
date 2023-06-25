@@ -3,6 +3,7 @@
 
 from fastapi import FastAPI, HTTPException
 from models import Result, Result_Pydantic, ResultIn_Pydantic
+from models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from pydantic import BaseModel
 
@@ -19,9 +20,13 @@ class Message(BaseModel):
 
 app = FastAPI()
 
+# ### MESSAGE D'ACCEUIL ### #
+
 @app.get("/")
 async def greetings():
     return {"greetings": "Welcome to QUERYMPICS!"}
+
+# ### INTERACTION AVEC LA TABLE RESULT ### #
 
 @app.get("/result/{id}",
          response_model=Result_Pydantic,
@@ -47,6 +52,14 @@ async def delete_a_result(id: str):
     if not del_obj:
         raise HTTPException(status_code=404, detail="Result not found.")
     return Message(message=f"Deleted {id}.")
+
+# ### INTERACTION AVEC LA TABLE ATHLETE ### #
+
+@app.get("/athlete/{id}",
+         response_model=Athlete_Pydantic,
+         responses={404: {"model": HTTPNotFoundError}})
+async def get_an_athlete(id: str):
+    return await Athlete_Pydantic.from_queryset_single(Athlete.get(id=id))
 
 # Connexion à la base de données
 register_tortoise(
