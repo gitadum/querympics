@@ -1,33 +1,26 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pydantic import BaseModel
-from typing import Optional
+from tortoise import fields, models
+from tortoise.contrib.pydantic import pydantic_model_creator
+from pydantic import Extra
 
-password = "dummypassw0rd"
+class Result(models.Model):
 
-class ResultIn(BaseModel):
-    id : str
-    games: str
-    sport: str
-    event: Optional[str]
-    athlete: str
-    noc: str
-    medal: Optional[str] = None
-    password: str
+    id = fields.CharField(pk=True, max_length=7)
+    games = fields.CharField(max_length=5, null=True)
+    sport = fields.CharField(max_length=32, null=True)
+    event = fields.CharField(max_length=128, null=True)
+    athlete = fields.CharField(max_length=12, null=True)
+    noc = fields.CharField(max_length=3, null=True)
+    medal = fields.CharField(max_length=1, null=True)
 
-class ResultOut(BaseModel):
-    id : str
-    games: str
-    sport: str
-    event: Optional[str]
-    athlete: str
-    noc: str
-    medal: Optional[str] = None
+    class PydanticMeta:
+        pass
 
-class Athlete(BaseModel):
-    first_name: str
-    last_name: str
-    gender: str
-    birth_year: Optional[str]
-    lattest_noc: Optional[str]
+    class Config:
+        extra = Extra.forbid
+
+Result_Pydantic = pydantic_model_creator(Result, name="Result")
+ResultIn_Pydantic = pydantic_model_creator(Result, name="ResultIn",
+                                           exclude_readonly=True)
