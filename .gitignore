@@ -6,6 +6,9 @@ __pycache__
 *.egg
 *.egg-info
 
+# Pytest
+.pytest_cache
+
 # IDE
 .vscode
 
