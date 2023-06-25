@@ -72,6 +72,14 @@ async def update_an_athlete(id: str, updated_athlete: AthleteIn_Pydantic):
     await Athlete.filter(id=id).update(**updated_athlete.dict(exclude_unset=True))
     return await Athlete_Pydantic.from_queryset_single(Athlete.get(id=id))
 
+@app.delete("/athlete/{id}", response_model=Message,
+            responses={404: {"model": HTTPNotFoundError}})
+async def delete_an_athlete(id: str):
+    del_obj = await Athlete.filter(id=id).delete()
+    if not del_obj:
+        raise HTTPException(status_code=404, detail="Athlete not found.")
+    return Message(message=f"Deleted {id}.")
+
 # Connexion à la base de données
 register_tortoise(
     app,
