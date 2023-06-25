@@ -31,7 +31,7 @@ assert list(summer.columns) == list(winter.columns)
 assert (summer.dtypes == winter.dtypes).all()
 
 # Concaténation des JO d'été et d'hiver
-athlet = pd.concat([summer, winter])
+df = pd.concat([summer, winter])
 
 # Nettoyage des variables de 'athlet'
 
@@ -40,74 +40,72 @@ athlet = pd.concat([summer, winter])
 _get_first_name = lambda s: parse_name(s)["first"].capitalize()
 _get_last_name = lambda s: parse_name(s)["last"].upper()
 
-athlet["FirstName"] = athlet.Name.apply(_get_first_name)
-athlet["LastName"] = athlet.Name.apply(_get_last_name)
+df["FirstName"] = df.Name.apply(_get_first_name)
+df["LastName"] = df.Name.apply(_get_last_name)
 
 # On crée une variable 'ShortName',
 # qui contient la forme courte du nom de l'athlète (prénom puis nom)
-athlet["ShortName"] = athlet["FirstName"] + " " + athlet["LastName"]
+df["ShortName"] = df["FirstName"] + " " + df["LastName"]
 
 # Age
 # On s'assure que les ages non entiers
 # ne correspondent qu'aux valeurs vides
-athlet["intAge"] = athlet.Age.apply(lambda x: x.is_integer())
-athlet.Age.isna().sum() == athlet[athlet["intAge"] == False].shape[0]
-athlet["Age"] = athlet.Age.astype("Int64")
-athlet.drop(columns=["intAge"], inplace=True)
+df["intAge"] = df.Age.apply(lambda x: x.is_integer())
+df.Age.isna().sum() == df[df["intAge"] == False].shape[0]
+df["Age"] = df.Age.astype("Int64")
+df.drop(columns=["intAge"], inplace=True)
 
 # Année d'olympiade
-athlet["Year"] = athlet.Year.astype("Int64")
+df["Year"] = df.Year.astype("Int64")
 
 # Calcul de l'année de naissance
-athlet["BirthYear"] = athlet["Year"] - athlet["Age"]
+df["BirthYear"] = df["Year"] - df["Age"]
 
 # Arrondi à l'année paire la plus proche
 # Pour donner une période de 2 ans qui donne le droit aux erreurs
-athlet["ApproxBirthYear"] = athlet["BirthYear"].apply(closest_even)
+df["ApproxBirthYear"] = df["BirthYear"].apply(closest_even)
 
-athlet["AthleteID"] = athlet.apply(lambda x: give_person_id(x.FirstName,
-                                                            x.LastName,
-                                                            x.Sex,
-                                                            x.ApproxBirthYear),
-                                                            axis=1)
+df["AthleteID"] = df.apply(lambda x: give_person_id(x.FirstName,
+                                                    x.LastName,
+                                                    x.Sex,
+                                                    x.ApproxBirthYear),
+                                                    axis=1)
 
-athlet["AthleteID"] = athlet["AthleteID"].apply(get_numeric_id)
+df["AthleteID"] = df["AthleteID"].apply(get_numeric_id)
 
 # Création d'un id par olympiade
-assert (athlet["Games"].apply(lambda s: int(s.split(" ")[0]))
-        == athlet["Year"]).all()
-assert (athlet["Games"].apply(lambda s: s.split(" ")[1])
-        == athlet["Season"]).all()
-athlet["GamesID"] = athlet.apply(lambda x: give_games_id(x.Year, x.Season), axis=1)
+assert (df["Games"].apply(lambda s: int(s.split(" ")[0])) == df["Year"]).all()
+assert (df["Games"].apply(lambda s: s.split(" ")[1]) == df["Season"]).all()
+df["GamesID"] = df.apply(lambda x: give_games_id(x.Year, x.Season), axis=1)
 
 # # PERSON # #
 
 # On commence par regrouper tous athlètes sous le même id d'athlète
 # Nom de famille
-person = (athlet.groupby("AthleteID")["LastName"].unique().to_frame())
+person = (df.groupby("AthleteID")["LastName"].unique().to_frame())
 assert person["LastName"].apply(len).all() == 1
 person["LastName"] = person["LastName"].apply(lambda l: l[0])
 
 # Prénom
-person = person.join(athlet.groupby("AthleteID")["FirstName"].unique().to_frame())
+person = person.join(df.groupby("AthleteID")["FirstName"].unique().to_frame())
 assert person["FirstName"].apply(len).all() == 1
 person["FirstName"] = person["FirstName"].apply(lambda l: l[0])
 
 # Genre
-person = person.join(athlet.groupby("AthleteID")["Sex"].unique().to_frame())
+person = person.join(df.groupby("AthleteID")["Sex"].unique().to_frame())
 assert person["Sex"].apply(len).all() == 1
 person["Sex"] = person["Sex"].apply(lambda l: l[0])
 person["Sex"] = person["Sex"].astype("category")
 
 # Age
-person = person.join(athlet.groupby("AthleteID")["BirthYear"].mean().to_frame())
+person = person.join(df.groupby("AthleteID")["BirthYear"].mean().to_frame())
 person["BirthYear"].fillna(0, inplace=True)
 person["BirthYear"] = person["BirthYear"].apply(lambda y: round(y, 0))
 person["BirthYear"] = person["BirthYear"].astype("Int64")
 person["BirthYear"].replace(0, pd.NA, inplace=True)
 
 # Dernier NOC
-person = person.join(athlet
+person = person.join(df
                      .sort_values(by="Year")
                      .groupby(["AthleteID"])["NOC"].last())
 
@@ -130,18 +128,18 @@ person.set_index("id", inplace=True)
 
 # # GAMES # #
 
-athlet.loc[athlet["Games"] == "1956 Summer", "City"] = \
-    athlet.loc[athlet["Games"] == "1956 Summer", "City"].replace("Stockholm",
-                                                                 "Melbourne")
+df.loc[df["Games"] == "1956 Summer", "City"] = \
+    df.loc[df["Games"] == "1956 Summer", "City"].replace("Stockholm",
+                                                         "Melbourne")
 
 games = (
-    athlet.groupby("Games")["GamesID"].unique().explode().to_frame().join(
-    athlet.groupby("Games")["Year"].unique().explode().to_frame()).join(
-    athlet.groupby("Games")["Season"].unique().explode().to_frame()).join(
-    athlet.groupby("Games")["City"].unique().explode().to_frame())
+    df.groupby("Games")["GamesID"].unique().explode().to_frame().join(
+    df.groupby("Games")["Year"].unique().explode().to_frame()).join(
+    df.groupby("Games")["Season"].unique().explode().to_frame()).join(
+    df.groupby("Games")["City"].unique().explode().to_frame())
     .reset_index())
 
-assert athlet["Games"].nunique() == games.shape[0]
+assert df["Games"].nunique() == games.shape[0]
 
 games["Season"] = games["Season"].astype("category")
 
@@ -155,7 +153,7 @@ games.set_index("id", inplace=True)
 
 # # RESULTS # #
 
-result = athlet.copy()
+result = df.copy()
 _result_cols = ["GamesID", "Sport", "Event", "AthleteID", "NOC", "Medal"]
 result = result[_result_cols]
 
