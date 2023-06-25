@@ -45,7 +45,7 @@ def fill_table_from_csv(db_name,
         for chunk in pd.read_csv(file_path, chunksize=n_chunk):
             chunk.to_sql(db_name, engine, if_exists="append", index=False)
             i += chunk.shape[0]
-            print(f"loaded {i} records into {db_name}.") if verbose else None
+            print(f"loaded {i} records into `{db_name}`.") if verbose else None
     else:
         # Remplissage de la table en une seule fois
         df = pd.read_csv(file_path)

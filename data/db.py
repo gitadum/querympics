@@ -14,15 +14,15 @@ def main():
     data_dir = "./data/"
     os.chdir(data_dir)
 
-    CREATE_ATHLETE = False
+    CREATE_ATHLETE = True
     TRUNCATE_ATHLETE = False
-    FILL_ATHLETE = False
-    CREATE_GAMES = False
+    FILL_ATHLETE = True
+    CREATE_GAMES = True
     TRUNCATE_GAMES = False
-    FILL_GAMES = False
-    CREATE_REGION = False
+    FILL_GAMES = True
+    CREATE_REGION = True
     TRUNCATE_REGION = False
-    FILL_REGION = False
+    FILL_REGION = True
     CREATE_RESULT = True
     TRUNCATE_RESULT = False
     FILL_RESULT = True
