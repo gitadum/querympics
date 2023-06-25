@@ -61,6 +61,11 @@ async def delete_a_result(id: str):
 async def get_an_athlete(id: str):
     return await Athlete_Pydantic.from_queryset_single(Athlete.get(id=id))
 
+@app.post("/athlete/new/", response_model=Athlete_Pydantic)
+async def write_athlete(athlete: Athlete_Pydantic):
+    obj = await Athlete.create(**athlete.dict(exclude_unset=True))
+    return await Athlete_Pydantic.from_tortoise_orm(obj)
+
 # Connexion à la base de données
 register_tortoise(
     app,
