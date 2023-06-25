@@ -78,41 +78,41 @@ assert (df["Games"].apply(lambda s: int(s.split(" ")[0])) == df["Year"]).all()
 assert (df["Games"].apply(lambda s: s.split(" ")[1]) == df["Season"]).all()
 df["GamesID"] = df.apply(lambda x: give_games_id(x.Year, x.Season), axis=1)
 
-# # PERSON # #
+# # ATHLETES # #
 
 # On commence par regrouper tous athlètes sous le même id d'athlète
 # Nom de famille
-person = (df.groupby("AthleteID")["LastName"].unique().to_frame())
-assert person["LastName"].apply(len).all() == 1
-person["LastName"] = person["LastName"].apply(lambda l: l[0])
+athlet = (df.groupby("AthleteID")["LastName"].unique().to_frame())
+assert athlet["LastName"].apply(len).all() == 1
+athlet["LastName"] = athlet["LastName"].apply(lambda l: l[0])
 
 # Prénom
-person = person.join(df.groupby("AthleteID")["FirstName"].unique().to_frame())
-assert person["FirstName"].apply(len).all() == 1
-person["FirstName"] = person["FirstName"].apply(lambda l: l[0])
+athlet = athlet.join(df.groupby("AthleteID")["FirstName"].unique().to_frame())
+assert athlet["FirstName"].apply(len).all() == 1
+athlet["FirstName"] = athlet["FirstName"].apply(lambda l: l[0])
 
 # Genre
-person = person.join(df.groupby("AthleteID")["Sex"].unique().to_frame())
-assert person["Sex"].apply(len).all() == 1
-person["Sex"] = person["Sex"].apply(lambda l: l[0])
-person["Sex"] = person["Sex"].astype("category")
+athlet = athlet.join(df.groupby("AthleteID")["Sex"].unique().to_frame())
+assert athlet["Sex"].apply(len).all() == 1
+athlet["Sex"] = athlet["Sex"].apply(lambda l: l[0])
+athlet["Sex"] = athlet["Sex"].astype("category")
 
 # Age
-person = person.join(df.groupby("AthleteID")["BirthYear"].mean().to_frame())
-person["BirthYear"].fillna(0, inplace=True)
-person["BirthYear"] = person["BirthYear"].apply(lambda y: round(y, 0))
-person["BirthYear"] = person["BirthYear"].astype("Int64")
-person["BirthYear"].replace(0, pd.NA, inplace=True)
+athlet = athlet.join(df.groupby("AthleteID")["BirthYear"].mean().to_frame())
+athlet["BirthYear"].fillna(0, inplace=True)
+athlet["BirthYear"] = athlet["BirthYear"].apply(lambda y: round(y, 0))
+athlet["BirthYear"] = athlet["BirthYear"].astype("Int64")
+athlet["BirthYear"].replace(0, pd.NA, inplace=True)
 
 # Dernier NOC
-person = person.join(df
+athlet = athlet.join(df
                      .sort_values(by="Year")
                      .groupby(["AthleteID"])["NOC"].last())
 
-person = person.reset_index()
+athlet = athlet.reset_index()
 
 _person_cols = ["AthleteID", "FirstName", "LastName", "Sex", "BirthYear", "NOC"]
-person = person[_person_cols]
+athlet = athlet[_person_cols]
 
 _person_cols_renaming = {
     "AthleteID": "id",
@@ -123,8 +123,8 @@ _person_cols_renaming = {
     "NOC": "lattest_noc"
 }
 
-person.rename(columns=_person_cols_renaming, inplace=True)
-person.set_index("id", inplace=True)
+athlet.rename(columns=_person_cols_renaming, inplace=True)
+athlet.set_index("id", inplace=True)
 
 # # GAMES # #
 
@@ -189,6 +189,6 @@ if __name__ == "__main__":
         os.makedirs(clean_dir)
     # On enregistre les tables
     region.to_csv(f"{clean_dir}/regions.csv", sep=",", index=True)
-    person.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=True)
+    athlet.to_csv(f"{clean_dir}/athletes.csv", sep=",", index=True)
     games.to_csv(f"{clean_dir}/games.csv", sep=",", index=True)
     result.to_csv(f"{clean_dir}/results.csv", sep=",", index=True)
