@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Form
 from typing import List, Optional
 
 from olympics import ResultIn, ResultOut
@@ -21,6 +21,10 @@ async def greetings():
 @app.get("/component/{component_id}") # path parameter
 async def get_component(component_id: int):
     return {"component": component_id}
+
+@app.post("/login/")
+async def login(username: str = Form(...), password: str = Form(...)):
+    return {"username": username}
 
 @app.get("/component/")
 async def read_component(number: int, text: Optional[str]):
