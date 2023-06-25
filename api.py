@@ -66,6 +66,12 @@ async def write_athlete(athlete: Athlete_Pydantic):
     obj = await Athlete.create(**athlete.dict(exclude_unset=True))
     return await Athlete_Pydantic.from_tortoise_orm(obj)
 
+@app.put("/athlete/{id}", response_model=Athlete_Pydantic,
+         responses={404: {"model": HTTPNotFoundError}})
+async def update_an_athlete(id: str, updated_athlete: AthleteIn_Pydantic):
+    await Athlete.filter(id=id).update(**updated_athlete.dict(exclude_unset=True))
+    return await Athlete_Pydantic.from_queryset_single(Athlete.get(id=id))
+
 # Connexion à la base de données
 register_tortoise(
     app,
