@@ -84,4 +84,5 @@ typing-extensions==4.6.3
 wcwidth==0.2.6
 webencodings==0.5.1
 websocket-client==1.6.0
+wheel==0.40.0
 zipp==3.15.0
