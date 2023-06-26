@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
+os.chdir("./app/")
 from fastapi.testclient import TestClient
 from api import app
 
