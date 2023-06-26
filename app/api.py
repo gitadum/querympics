@@ -20,7 +20,7 @@ async def connect():
 async def disconnect():
     await database.disconnect()
 
-# ### MESSAGE D'ACCEUIL ### #
+# ### MESSAGE D'ACCUEIL ### #
 
 @app.get("/")
 async def greetings():
