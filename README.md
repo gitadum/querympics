@@ -17,7 +17,7 @@ pip install -r requirements.txt
 ```
 
 ## Utilisation
-
+**EDIT** : le lancement avec uvicorn ne fonctionne pas avec la version actuelle
 Dans un terminal, lancer la commande :
 ```
 cd querympics && uvicorn api:app
