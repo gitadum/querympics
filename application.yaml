@@ -1,0 +1,7 @@
+app:
+  dataSource:
+    port: 5432
+    username: sqladum
+    password: dummypassw0rd
+    host: localhost
+    databaseName: olympics
