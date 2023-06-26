@@ -3,12 +3,12 @@
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from models import Result, Result_Pydantic, ResultIn_Pydantic
-from models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
-from models import Message
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 
-from database import DATABASE_URL, database, db_host
+from .models import Result, Result_Pydantic, ResultIn_Pydantic
+from .models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
+from .models import Message
+from .database import DATABASE_URL, database, db_host
 
 app = FastAPI()
 
