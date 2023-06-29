@@ -42,3 +42,13 @@ class Athlete(models.Model):
 Athlete_Pydantic = pydantic_model_creator(Athlete, name="Athlete")
 AthleteIn_Pydantic = pydantic_model_creator(Athlete, name="AthleteIn",
                                             exclude_readonly=True)
+
+class AthleteView(BaseModel):
+    id: str
+    first_name: str
+    last_name: str
+    gender: str
+    birth_year: int
+    nocs: list
+    disciplines: list
+    n_medals: int

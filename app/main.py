@@ -9,6 +9,7 @@ from pydantic import BaseModel
 import sqlalchemy
 
 from database import database, metadata, DATABASE_URL, db_host
+from models import AthleteView
 
 athlete_view = sqlalchemy.Table(
     "athlete_view",
@@ -35,16 +36,6 @@ async def connect():
 @app.on_event("shutdown")
 async def disconnect():
     await database.disconnect()
-
-class AthleteView(BaseModel):
-    id: str
-    first_name: str
-    last_name: str
-    gender: str
-    birth_year: int
-    nocs: list
-    disciplines: list
-    n_medals: int
 
 @app.get("/")
 async def greetings():
