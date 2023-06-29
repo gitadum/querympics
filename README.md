@@ -1,6 +1,6 @@
 # Querympics
 
-version de l'API : `0.1.1-beta` 
+version de l'API : `0.2.0-alpha` 
 
 Une API pour trouver des infos sur les jeux olympiques
 * un résultat sportif donné
