@@ -14,7 +14,7 @@ db_name = "olympics"
 db_host = "localhost"
 db_port = 5432
 
-DATABASE_URL = f"postgres://{db_usr}:{db_pwd}@{db_host}:{db_port}/{db_name}"
+DATABASE_URL = f"postgresql://{db_usr}:{db_pwd}@{db_host}:{db_port}/{db_name}"
 
 metadata = sqlalchemy.MetaData()
 database = databases.Database(DATABASE_URL)
