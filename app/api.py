@@ -5,10 +5,18 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 
-from models import Result, Result_Pydantic, ResultIn_Pydantic
-from models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
-from models import Message
-from database import DATABASE_URL, database, db_host
+# Permet de lancer les tests unitaires
+# Sans erreur d'import liés à app/models.py ou app/database.py 
+try:
+    from .models import Result, Result_Pydantic, ResultIn_Pydantic
+    from .models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
+    from .models import Message
+    from .database import DATABASE_URL, database, db_host
+except ImportError:
+    from models import Result, Result_Pydantic, ResultIn_Pydantic
+    from models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
+    from models import Message
+    from database import DATABASE_URL, database, db_host
 
 app = FastAPI()
 
