@@ -49,7 +49,7 @@ async def get_a_result(id: str):
     get_one = await database.fetch_one(query)
     return get_one
 
-@app.post("/result/new")
+@app.post("/result/new", response_model=Result)
 async def write_result(new_result: ResultIn = Depends()):
     new_result = new_result.dict()
     #new_result_out = Result()
@@ -61,17 +61,16 @@ async def write_result(new_result: ResultIn = Depends()):
     #new_result_out.id = new_result_id
     query = result.insert().values(
         id = new_result_id,
-        games = new_result["games"],
+        games = new_result_games,
         sport = new_result["sport"],
         event = new_result["event"],
         athlete = new_result["athlete"],
         noc = new_result["noc"],
         medal = new_result["medal"]
-
     )
-    #await database.execute(query)
-    #return {"season": new_result_id}
-    return {**new_result}
+    await database.execute(query)
+    return await database.fetch_one(result.select()
+                                          .where(result.c.id == new_result_id))
 
 # @app.put("/result/{id}", response_class=Result,
 #          responses={404: {"model": HTTPNotFoundError}})
