@@ -76,11 +76,13 @@ async def write_result(new_result: ResultIn = Depends()):
     return await database.fetch_one(result.select()
                                           .where(result.c.id == new_result_id))
 
-# @app.put("/result/{id}", response_class=Result,
-#          responses={404: {"model": HTTPNotFoundError}})
-# async def update_a_result(id: str, updated_result: ResultIn):
-#     await Result.filter(id=id).update(**updated_result.dict(exclude_unset=True))
-#     return await Result.from_queryset_single(Result.get(id=id))
+@app.put("/result/{id}", response_model=Result,
+         responses={404: {"model": HTTPNotFoundError}})
+async def update_a_result(id: str, update_input: ResultIn):
+    query = result.update().where(result.c.id==id).values(**update_input.dict())
+    await database.execute(query)
+    updated_result = result.select().where(result.c.id == id)
+    return await database.fetch_one(updated_result)
 
 # @app.delete("/result/{id}", response_model=Message,
 #             responses={404: {"model": HTTPNotFoundError}})
