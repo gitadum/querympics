@@ -13,6 +13,7 @@ try:
     from .models import Message
     from .database import DATABASE_URL, database, db_host
     from .database import result, athlete_view
+    from .utils.helper import give_games_id
 except ImportError:
     from models import Result, ResultIn
     from models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
@@ -20,6 +21,7 @@ except ImportError:
     from models import Message
     from database import DATABASE_URL, database, db_host
     from database import result, athlete_view
+    from utils.helper import give_games_id
 
 app = FastAPI(title="Querympics", version="0.2.0-beta")
 
@@ -47,13 +49,15 @@ async def get_a_result(id: str):
     get_one = await database.fetch_one(query)
     return get_one
 
-@app.post("/result/new", response_model=Result)
+@app.post("/result/new")
 async def write_result(new_result: ResultIn = Depends()):
     new_result = new_result.dict()
     #new_result_out = Result()
     n_results = database.execute("SELECT COUNT(id) FROM results")
     new_result_id = "S" if new_result["season"] == "Summer" else "W"
     new_result_id = "".join([new_result_id, str(n_results)])
+    new_result_games = give_games_id(new_result["season"],
+                                     new_result["year"])
     #new_result_out.id = new_result_id
     query = result.insert().values(
         id = new_result_id,
