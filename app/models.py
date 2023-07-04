@@ -29,9 +29,8 @@ class Result(BaseModel):
 
 class ResultIn(BaseModel):
 
-    season: str
+    season: Optional[str]
     year: Optional[int]
-    games: Optional[str]
     sport: Optional[str]
     event: Optional[str]
     athlete: Optional[str]

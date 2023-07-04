@@ -52,13 +52,13 @@ async def get_a_result(id: str):
 @app.post("/result/new", response_model=Result)
 async def write_result(new_result: ResultIn = Depends()):
     new_result = new_result.dict()
-    #new_result_out = Result()
-    n_results = database.execute("SELECT COUNT(id) FROM results")
-    new_result_id = "S" if new_result["season"] == "Summer" else "W"
-    new_result_id = "".join([new_result_id, str(n_results)])
-    new_result_games = give_games_id(new_result["season"],
-                                     new_result["year"])
-    #new_result_out.id = new_result_id
+    season = "S" if new_result["season"] == "Summer" else "W"
+    count_query = f"SELECT COUNT(id) FROM result WHERE games LIKE '{season}%'"
+    n_results = await database.execute(count_query)
+    new_result_id = "".join([season, str(n_results).zfill(6)])
+    new_result_games = give_games_id(new_result["year"],
+                                     new_result["season"])
+
     query = result.insert().values(
         id = new_result_id,
         games = new_result_games,
@@ -68,7 +68,11 @@ async def write_result(new_result: ResultIn = Depends()):
         noc = new_result["noc"],
         medal = new_result["medal"]
     )
-    await database.execute(query)
+    new_result["id"] = new_result_id
+    new_result["games"] = new_result_games
+    del new_result["season"]
+    del new_result["year"]
+    await database.execute(query, values=new_result)
     return await database.fetch_one(result.select()
                                           .where(result.c.id == new_result_id))
 
