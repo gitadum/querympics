@@ -3,6 +3,7 @@
 # Python
 .venv
 __pycache__
+*.pyc
 *.egg
 *.egg-info
 

@@ -1,23 +1,25 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from typing import Optional, List
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
 from pydantic import BaseModel, Extra
+from utils.helper import give_games_id
 
 class Message(BaseModel):
     message: str = ""
 
 
-class Result(models.Model):
+class Result(BaseModel):
 
-    id = fields.CharField(pk=True, max_length=7)
-    games = fields.CharField(max_length=5, null=True)
-    sport = fields.CharField(max_length=32, null=True)
-    event = fields.CharField(max_length=128, null=True)
-    athlete = fields.CharField(max_length=12, null=True)
-    noc = fields.CharField(max_length=3, null=True)
-    medal = fields.CharField(max_length=1, null=True)
+    id: str
+    games: str
+    sport: str
+    event: str
+    athlete: str
+    noc: str
+    medal: str
 
     class PydanticMeta:
         pass
@@ -25,12 +27,32 @@ class Result(models.Model):
     class Config:
         extra = Extra.forbid
 
-Result_Pydantic = pydantic_model_creator(Result, name="Result")
-ResultIn_Pydantic = pydantic_model_creator(Result, name="ResultIn",
-                                           exclude_readonly=True)
+class ResultIn(BaseModel):
 
+    season: Optional[str]
+    year: Optional[int]
+    sport: Optional[str]
+    event: Optional[str]
+    athlete: Optional[str]
+    noc: Optional[str]
+    medal: Optional[str]
+
+    class PydanticMeta:
+        pass
+
+    class Config:
+        extra = Extra.forbid
 
 class Athlete(models.Model):
+
+    id = fields.CharField(pk=True, max_length=12)
+    first_name = fields.CharField(max_length=128, null=True)
+    last_name = fields.CharField(max_length=128, null=True)
+    gender = fields.CharField(max_length=1, null=True)
+    birth_year = fields.SmallIntField(null=True)
+    lattest_noc = fields.CharField(max_length=3, null=True)
+
+class AthleteIn(models.Model):
 
     id = fields.CharField(pk=True, max_length=12)
     first_name = fields.CharField(max_length=128, null=True)
@@ -42,3 +64,13 @@ class Athlete(models.Model):
 Athlete_Pydantic = pydantic_model_creator(Athlete, name="Athlete")
 AthleteIn_Pydantic = pydantic_model_creator(Athlete, name="AthleteIn",
                                             exclude_readonly=True)
+
+class AthleteView(BaseModel):
+    id: str
+    first_name: str
+    last_name: str
+    gender: Optional[str]
+    birth_year: Optional[str]
+    nocs: List[str]
+    disciplines: List[str]
+    n_medals: int
