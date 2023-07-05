@@ -12,7 +12,7 @@ try:
     from .models import AthleteView
     from .models import Message
     from .database import DATABASE_URL, database, db_host
-    from .database import result, athlete_view
+    from .database import result, athlete, athlete_view
     from .utils.helper import give_games_id
 except ImportError:
     from models import Result, ResultIn
@@ -107,11 +107,13 @@ async def delete_a_result(id: str):
 
 # # ### INTERACTION AVEC LA TABLE ATHLETE ### #
 
-# @app.get("/athlete/{id}",
-#          response_model=Athlete_Pydantic,
-#          responses={404: {"model": HTTPNotFoundError}})
-# async def get_an_athlete(id: str):
-#     return await Athlete_Pydantic.from_queryset_single(Athlete.get(id=id))
+@app.get("/athlete/{id}",
+         response_model=Athlete,
+         responses={404: {"model": HTTPNotFoundError}})
+async def get_an_athlete(id: str):
+    query = athlete.select().where(athlete.c.id == id)
+    get_one = await database.fetch_one(query)
+    return get_one
 
 # @app.post("/athlete/new/", response_model=Athlete_Pydantic)
 # async def write_athlete(athlete: Athlete_Pydantic):
