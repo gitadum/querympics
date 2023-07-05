@@ -68,21 +68,35 @@ async def write_result(new_result: ResultIn = Depends()):
         noc = new_result["noc"],
         medal = new_result["medal"]
     )
-    new_result["id"] = new_result_id
-    new_result["games"] = new_result_games
-    del new_result["season"]
-    del new_result["year"]
-    await database.execute(query, values=new_result)
+
+    await database.execute(query)
     return await database.fetch_one(result.select()
                                           .where(result.c.id == new_result_id))
 
 @app.put("/result/{id}", response_model=Result,
          responses={404: {"model": HTTPNotFoundError}})
-async def update_a_result(id: str, update_input: ResultIn):
-    query = result.update().where(result.c.id==id).values(**update_input.dict())
+async def update_a_result(id: str, update_input: ResultIn = Depends()):
+    stored_item_query = result.select().where(result.c.id == id)
+    stored_item = await database.fetch_one(stored_item_query)
+    update_result = update_input.dict(exclude_unset=True)
+    try:
+        if (update_result["season"] is not None
+            and update_result["year"] is not None):
+            update_result["games"] = give_games_id(update_result["year"],
+                                                   update_result["season"])
+    except KeyError:
+        pass
+    del update_result["season"]
+    del update_result["year"]
+    # On remplace les champs non renseignés
+    # par les champs déjà remplis dans la base de données
+    for key in update_result.keys():
+        if update_result[key] is None:
+            update_result[key] = stored_item[key]
+    query = result.update().where(result.c.id==id).values(**update_result)
     await database.execute(query)
-    updated_result = result.select().where(result.c.id == id)
-    return await database.fetch_one(updated_result)
+    get_updated_result = result.select().where(result.c.id == id)
+    return await database.fetch_one(get_updated_result)
 
 # @app.delete("/result/{id}", response_model=Message,
 #             responses={404: {"model": HTTPNotFoundError}})
