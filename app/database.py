@@ -30,6 +30,18 @@ result = sqlalchemy.Table(
     sqlalchemy.Column("medal", sqlalchemy.String(1))
     )
 
+# Athlete
+athlete = sqlalchemy.Table(
+    "athlete",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.String(12), primary_key=True),
+    sqlalchemy.Column("first_name", sqlalchemy.String(128)),
+    sqlalchemy.Column("last_name", sqlalchemy.String(128)),
+    sqlalchemy.Column("gender", sqlalchemy.String(1)),
+    sqlalchemy.Column("birth_year", sqlalchemy.Integer()),
+    sqlalchemy.Column("lattest_noc", sqlalchemy.String(3))
+    )
+
 # AthleteView
 athlete_view = sqlalchemy.Table(
     "athlete_view",
