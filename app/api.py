@@ -98,13 +98,12 @@ async def update_a_result(id: str, update_input: ResultIn = Depends()):
     get_updated_result = result.select().where(result.c.id == id)
     return await database.fetch_one(get_updated_result)
 
-# @app.delete("/result/{id}", response_model=Message,
-#             responses={404: {"model": HTTPNotFoundError}})
-# async def delete_a_result(id: str):
-#     del_obj = await Result.filter(id=id).delete()
-#     if not del_obj:
-#         raise HTTPException(status_code=404, detail="Result not found.")
-#     return Message(message=f"Deleted {id}.")
+@app.delete("/result/{id}", response_model=Message,
+            responses={404: {"model": HTTPNotFoundError}})
+async def delete_a_result(id: str):
+    query = result.delete().where(result.c.id == id)
+    await database.execute(query)
+    return Message(message=f"Deleted {id}.")
 
 # # ### INTERACTION AVEC LA TABLE ATHLETE ### #
 
