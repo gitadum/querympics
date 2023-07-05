@@ -23,7 +23,7 @@ except ImportError:
     from database import result, athlete_view
     from utils.helper import give_games_id
 
-app = FastAPI(title="Querympics", version="0.2.0-beta")
+app = FastAPI(title="Querympics", version="0.2.0-rc")
 
 @app.on_event("startup")
 async def connect():
