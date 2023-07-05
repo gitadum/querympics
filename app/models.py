@@ -37,9 +37,6 @@ class ResultIn(BaseModel):
     noc: Optional[str]
     medal: Optional[str]
 
-    def gen_games_id(self):
-        self.games = give_games_id(self.year, self.season)
-
     class PydanticMeta:
         pass
 
