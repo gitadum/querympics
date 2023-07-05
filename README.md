@@ -20,9 +20,9 @@ pip install -r requirements.txt
 
 Dans un terminal, lancer la commande :
 ```
-cd querympics && uvicorn api:app
+cd querympics/app/ && uvicorn api:app
 ```
-ou plus simplement :
+ou lancer le script `app/api.py` via la commande :
 ```
-cd querympics && python api.py
+cd querympics && python app/api.py
 ```
