@@ -8,7 +8,7 @@ from typing import List
 
 try:
     from .models import Result, ResultIn
-    from .models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
+    from .models import Athlete, AthleteIn
     from .models import AthleteView
     from .models import Message
     from .database import DATABASE_URL, database, db_host
@@ -16,11 +16,11 @@ try:
     from .utils.helper import give_games_id
 except ImportError:
     from models import Result, ResultIn
-    from models import Athlete, Athlete_Pydantic, AthleteIn_Pydantic
+    from models import Athlete, AthleteIn
     from models import AthleteView
     from models import Message
     from database import DATABASE_URL, database, db_host
-    from database import result, athlete_view
+    from database import result, athlete, athlete_view
     from utils.helper import give_games_id
 
 app = FastAPI(title="Querympics", version="0.2.0-rc")

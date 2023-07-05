@@ -2,10 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, List
-from tortoise import fields, models
-from tortoise.contrib.pydantic import pydantic_model_creator
-from pydantic import BaseModel, Extra
-from utils.helper import give_games_id
+from pydantic import BaseModel, Extra, Field
 
 class Message(BaseModel):
     message: str = ""
@@ -27,6 +24,7 @@ class Result(BaseModel):
     class Config:
         extra = Extra.forbid
 
+
 class ResultIn(BaseModel):
 
     season: Optional[str]
@@ -43,27 +41,26 @@ class ResultIn(BaseModel):
     class Config:
         extra = Extra.forbid
 
-class Athlete(models.Model):
 
-    id = fields.CharField(pk=True, max_length=12)
-    first_name = fields.CharField(max_length=128, null=True)
-    last_name = fields.CharField(max_length=128, null=True)
-    gender = fields.CharField(max_length=1, null=True)
-    birth_year = fields.SmallIntField(null=True)
-    lattest_noc = fields.CharField(max_length=3, null=True)
+class Athlete(BaseModel):
 
-class AthleteIn(models.Model):
+    id: str = Field(..., max_length=12) # Clé primaire
+    first_name: str = Field(None, max_length=128)
+    last_name: str = Field(None, max_length=128)
+    gender: str = Field(None, max_length=1)
+    birth_year: int = Field(None)
+    lattest_noc: str = Field(None, max_length=3)
 
-    id = fields.CharField(pk=True, max_length=12)
-    first_name = fields.CharField(max_length=128, null=True)
-    last_name = fields.CharField(max_length=128, null=True)
-    gender = fields.CharField(max_length=1, null=True)
-    birth_year = fields.SmallIntField(null=True)
-    lattest_noc = fields.CharField(max_length=3, null=True)
 
-Athlete_Pydantic = pydantic_model_creator(Athlete, name="Athlete")
-AthleteIn_Pydantic = pydantic_model_creator(Athlete, name="AthleteIn",
-                                            exclude_readonly=True)
+class AthleteIn(BaseModel):
+
+    id: str = Field(..., max_length=12) # Clé primaire
+    first_name: str = Field(None, max_length=128)
+    last_name: str = Field(None, max_length=128)
+    gender: str = Field(None, max_length=1)
+    birth_year: int = Field(None)
+    lattest_noc: str = Field(None, max_length=3)
+
 
 class AthleteView(BaseModel):
     id: str
