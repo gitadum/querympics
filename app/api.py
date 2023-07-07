@@ -45,10 +45,14 @@ async def greetings():
 
 @app.get("/result/{id}",
          response_model=Result,
-         responses={404: {"model": HTTPNotFoundError}})
+         )
 async def get_a_result(id: str):
     query = result.select().where(result.c.id == id)
     get_one = await database.fetch_one(query)
+    try:
+        assert get_one is not None
+    except:
+        raise HTTPException(404, f"result {id} not found.")
     return get_one
 
 @app.post("/result/new", response_model=Result)
@@ -75,11 +79,19 @@ async def write_result(new_result: ResultIn = Depends()):
     return await database.fetch_one(result.select()
                                           .where(result.c.id == new_result_id))
 
-@app.put("/result/{id}", response_model=Result,
-         responses={404: {"model": HTTPNotFoundError}})
+@app.put("/result/{id}",
+         response_model=Result,
+         )
 async def update_a_result(id: str, update_input: ResultIn = Depends()):
     stored_item_query = result.select().where(result.c.id == id)
     stored_item = await database.fetch_one(stored_item_query)
+
+    # On vérifie que l'élément existe dans cette table
+    try:
+        assert stored_item is not None
+    except:
+        raise HTTPException(404, f"result {id} not found.")
+
     update_result = update_input.dict(exclude_unset=True)
     try:
         if (update_result["season"] is not None
@@ -100,9 +112,16 @@ async def update_a_result(id: str, update_input: ResultIn = Depends()):
     get_updated_result = result.select().where(result.c.id == id)
     return await database.fetch_one(get_updated_result)
 
-@app.delete("/result/{id}", response_model=Message,
-            responses={404: {"model": HTTPNotFoundError}})
+@app.delete("/result/{id}",
+            response_model=Message,
+            )
 async def delete_a_result(id: str):
+    deletable_item_query = result.select().where(result.c.id == id)
+    deletable_item = await database.fetch_one(deletable_item_query)
+    try:
+        assert deletable_item is not None
+    except:
+        raise HTTPException(404, f"result {id} not found.")
     query = result.delete().where(result.c.id == id)
     await database.execute(query)
     return Message(message=f"Deleted {id}.")
@@ -111,10 +130,14 @@ async def delete_a_result(id: str):
 
 @app.get("/athlete/{id}",
          response_model=Athlete,
-         responses={404: {"model": HTTPNotFoundError}})
+         )
 async def get_an_athlete(id: str):
     query = athlete.select().where(athlete.c.id == id)
     get_one = await database.fetch_one(query)
+    try:
+        assert get_one is not None
+    except:
+        raise HTTPException(404, f"athlete {id} not found.")
     return get_one
 
 @app.post("/athlete/new",
@@ -152,10 +175,16 @@ async def write_an_athlete(new: AthleteIn = Depends()):
 
 @app.put("/athlete/{id}",
          response_model=Athlete,
-         responses={404: {"model": HTTPNotFoundError}})
+         )
 async def update_an_athlete(id: str, update_input: AthleteIn = Depends()):
     stored_item_query = athlete.select().where(athlete.c.id == id)
     stored_item = await database.fetch_one(stored_item_query)
+
+    try:
+        assert stored_item is not None
+    except:
+        raise HTTPException(404, f"athlete {id} not found.")
+
     update = update_input.dict(exclude_unset=True)
 
     # On remplace les champs non renseignés
@@ -169,9 +198,17 @@ async def update_an_athlete(id: str, update_input: AthleteIn = Depends()):
     updated_item = await database.fetch_one(updated_item_query)
     return updated_item
 
-@app.delete("/athlete/{id}", response_model=Message,
-            responses={404: {"model": HTTPNotFoundError}})
+@app.delete("/athlete/{id}",
+            response_model=Message,
+            )
 async def delete_an_athlete(id: str):
+    deletable_item_query = athlete.select().where(athlete.c.id == id)
+    deletable_item = await database.fetch_one(deletable_item_query)
+    try:
+        assert deletable_item is not None
+    except:
+        raise HTTPException(404, f"athlete {id} not found.")
+    
     query = athlete.delete().where(athlete.c.id == id)
     await database.execute(query)
     return Message(message=f"Deleted {id}.")
@@ -183,6 +220,10 @@ async def get_athletes_by_name(last_name: str):
     last_name = last_name.upper()
     query = athlete_view.select().where(athlete_view.c.last_name == last_name)
     all_get = await database.fetch_all(query)
+    try:
+        assert all_get != []
+    except:
+        raise HTTPException(404, f"No athlete found for the name '{last_name}'")
     return all_get
 
 # Connexion à la base de données
