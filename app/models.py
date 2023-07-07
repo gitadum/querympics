@@ -48,18 +48,17 @@ class Athlete(BaseModel):
     first_name: str = Field(None, max_length=128)
     last_name: str = Field(None, max_length=128)
     gender: str = Field(None, max_length=1)
-    birth_year: int = Field(None)
+    birth_year: Optional[int] = Field(None)
     lattest_noc: str = Field(None, max_length=3)
 
 
 class AthleteIn(BaseModel):
 
-    id: str = Field(..., max_length=12) # Clé primaire
     first_name: str = Field(None, max_length=128)
     last_name: str = Field(None, max_length=128)
     gender: str = Field(None, max_length=1)
-    birth_year: int = Field(None)
-    lattest_noc: str = Field(None, max_length=3)
+    birth_year: Optional[int] = Field(None)
+    lattest_noc: Optional[str] = Field(None, max_length=3)
 
 
 class AthleteView(BaseModel):
