@@ -3,7 +3,6 @@
 
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
-from tortoise.contrib.fastapi import HTTPNotFoundError, register_tortoise
 from typing import List
 
 try:
@@ -11,7 +10,7 @@ try:
     from .models import Athlete, AthleteIn
     from .models import AthleteView
     from .models import Message
-    from .database import DATABASE_URL, database, db_host
+    from .database import database, db_host
     from .database import result, athlete, athlete_view
     from .utils.helper import give_games_id, give_person_id
     from .utils.helper import closest_even, get_numeric_id
@@ -20,7 +19,7 @@ except ImportError:
     from models import Athlete, AthleteIn
     from models import AthleteView
     from models import Message
-    from database import DATABASE_URL, database, db_host
+    from database import database, db_host
     from database import result, athlete, athlete_view
     from utils.helper import give_games_id, give_person_id
     from utils.helper import closest_even, get_numeric_id
@@ -225,15 +224,6 @@ async def get_athletes_by_name(last_name: str):
     except:
         raise HTTPException(404, f"No athlete found for the name '{last_name}'")
     return all_get
-
-# Connexion à la base de données
-# register_tortoise(
-#     app,
-#     db_url=DATABASE_URL,
-#     modules={"models": ["models"]},
-#     generate_schemas=True,
-#     add_exception_handlers=True
-# )
 
 if __name__ == "__main__":
     uvicorn.run(app, host=db_host, port=8000)
