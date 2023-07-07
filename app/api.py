@@ -13,7 +13,8 @@ try:
     from .models import Message
     from .database import DATABASE_URL, database, db_host
     from .database import result, athlete, athlete_view
-    from .utils.helper import give_games_id
+    from .utils.helper import give_games_id, give_person_id
+    from .utils.helper import closest_even, get_numeric_id
 except ImportError:
     from models import Result, ResultIn
     from models import Athlete, AthleteIn
@@ -21,7 +22,8 @@ except ImportError:
     from models import Message
     from database import DATABASE_URL, database, db_host
     from database import result, athlete, athlete_view
-    from utils.helper import give_games_id
+    from utils.helper import give_games_id, give_person_id
+    from utils.helper import closest_even, get_numeric_id
 
 app = FastAPI(title="Querympics", version="0.2.0-rc")
 
@@ -115,24 +117,64 @@ async def get_an_athlete(id: str):
     get_one = await database.fetch_one(query)
     return get_one
 
-# @app.post("/athlete/new/", response_model=Athlete_Pydantic)
-# async def write_athlete(athlete: Athlete_Pydantic):
-#     obj = await Athlete.create(**athlete.dict(exclude_unset=True))
-#     return await Athlete_Pydantic.from_tortoise_orm(obj)
+@app.post("/athlete/new",
+          response_model=Athlete
+          )
+async def write_an_athlete(new: AthleteIn = Depends()):
+    new = new.dict()
+    # Génération de l'ID Athlète
+    # à partir des infos en entrée
+    approx_birth_year = closest_even(new["birth_year"])
+    new_id = give_person_id(new["first_name"],
+                            new["last_name"],
+                            new["gender"],
+                            approx_birth_year)
+    # Transformation de l'ID Athlète en hash numérique
+    new_id = get_numeric_id(new_id)
 
-# @app.put("/athlete/{id}", response_model=Athlete_Pydantic,
-#          responses={404: {"model": HTTPNotFoundError}})
-# async def update_an_athlete(id: str, updated_athlete: AthleteIn_Pydantic):
-#     await Athlete.filter(id=id).update(**updated_athlete.dict(exclude_unset=True))
-#     return await Athlete_Pydantic.from_queryset_single(Athlete.get(id=id))
+    # Formatage des noms et prénoms de l'athlète
+    new_first_name = new["first_name"].capitalize()
+    new_last_name = new["last_name"].upper()
 
-# @app.delete("/athlete/{id}", response_model=Message,
-#             responses={404: {"model": HTTPNotFoundError}})
-# async def delete_an_athlete(id: str):
-#     del_obj = await Athlete.filter(id=id).delete()
-#     if not del_obj:
-#         raise HTTPException(status_code=404, detail="Athlete not found.")
-#     return Message(message=f"Deleted {id}.")
+    query = athlete.insert().values(
+        id = new_id,
+        first_name = new_first_name,
+        last_name = new_last_name,
+        gender = new["gender"],
+        birth_year = new["birth_year"],
+        lattest_noc = new["lattest_noc"]
+    )
+    await database.execute(query)
+
+    new_item_query = athlete.select().where(athlete.c.id == new_id)
+    new_item = await database.fetch_one(new_item_query)
+    return new_item
+
+@app.put("/athlete/{id}",
+         response_model=Athlete,
+         responses={404: {"model": HTTPNotFoundError}})
+async def update_an_athlete(id: str, update_input: AthleteIn = Depends()):
+    stored_item_query = athlete.select().where(athlete.c.id == id)
+    stored_item = await database.fetch_one(stored_item_query)
+    update = update_input.dict(exclude_unset=True)
+
+    # On remplace les champs non renseignés
+    # par les champs déjà remplis dans la base de données
+    for key in update.keys():
+        if update[key] is None:
+            update[key] = stored_item[key]
+    query = athlete.update().where(athlete.c.id==id).values(**update)
+    await database.execute(query)
+    updated_item_query = athlete.select().where(athlete.c.id == id)
+    updated_item = await database.fetch_one(updated_item_query)
+    return updated_item
+
+@app.delete("/athlete/{id}", response_model=Message,
+            responses={404: {"model": HTTPNotFoundError}})
+async def delete_an_athlete(id: str):
+    query = athlete.delete().where(athlete.c.id == id)
+    await database.execute(query)
+    return Message(message=f"Deleted {id}.")
 
 # Faire un fetch all avec la vue 
 @app.get("/athletebyname",
