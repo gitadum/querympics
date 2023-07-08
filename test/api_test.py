@@ -74,6 +74,15 @@ vwembanyama_output = {
     "lattest_noc": "FRA"
 }
 
+vwembanyama_usa = {
+    "id": "076466741491",
+    "first_name": "Victor",
+    "last_name": "WEMBANYAMA",
+    "gender": "M",
+    "birth_year": 2004,
+    "lattest_noc": "USA"
+}
+
 def test_greetings():
     with TestClient(app) as client:
         response = client.get("/")
@@ -164,3 +173,32 @@ def test_write_an_athlete(input_post, expected):
         assert response.json() == expected
         # On supprime l'entrée créée pour le test
         client.delete(f"/athlete/{response.json()['id']}")
+
+@pytest.mark.parametrize(
+        ("test_input", "update_params", "expected"),
+        (
+            (vwembanyama_input, {"lattest_noc": 'USA'}, vwembanyama_usa),
+        )
+)
+def test_update_an_athlete(test_input, update_params, expected):
+    with TestClient(app) as client:
+        create_test_item = client.post("/athlete/new/", params=test_input)
+        assert create_test_item.status_code == 200
+        test_item = create_test_item.json()
+        response = client.put(f"/athlete/{test_item['id']}",
+                              params=update_params)
+        assert response.status_code == 200
+        assert response.json() == expected
+        # On supprime l'entrée créée pour le test
+        client.delete(f"/athlete/{test_item['id']}")
+
+def test_delete_an_athlete():
+    test_item_input = vwembanyama_input
+    with TestClient(app) as client:
+        create_test_item = client.post("/athlete/new", params=test_item_input)
+        assert create_test_item.status_code == 200
+        test_item = create_test_item.json()
+        response = client.delete(f"/athlete/{test_item['id']}")
+        assert response.status_code == 200
+        assert response.json() == {"message": f"Deleted {test_item['id']}."}
+        assert client.get(f"/athlete/{test_item['id']}").status_code == 404
