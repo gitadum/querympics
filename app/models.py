@@ -77,8 +77,8 @@ class AthleteView(BaseModel):
     id: str
     first_name: str
     last_name: str
-    gender: Optional[str]
+    gender: str
     birth_year: Optional[str]
-    nocs: List[str]
-    disciplines: List[str]
-    n_medals: int
+    nocs: List[Optional[str]]
+    disciplines: List[Optional[str]]
+    n_medals: Optional[int]
