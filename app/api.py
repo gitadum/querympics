@@ -60,7 +60,7 @@ async def write_result(new_result: ResultIn = Depends()):
     season = "S" if new_result["season"] == "Summer" else "W"
     count_query = f"SELECT COUNT(id) FROM result WHERE games LIKE '{season}%'"
     n_results = await database.execute(count_query)
-    new_result_id = "".join([season, str(n_results).zfill(6)])
+    new_result_id = "".join([season, str(n_results+1).zfill(6)])
     new_result_games = give_games_id(new_result["year"],
                                      new_result["season"])
 
