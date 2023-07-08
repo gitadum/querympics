@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "querympics"
+version = "0.2.0"
+description = "Trouvez des infos sur les JO grâce à Querympics"
+authors = ["Adrien Dumont <dev@adum.io>"]
+license = "GPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+psycopg2-binary = "2.9.6"
+SQLAlchemy = "1.4.48"
+nameparser = "1.1.2"
+Levenshtein = "0.21.1"
+fastapi = "0.98.0"
+uvicorn = "0.22.0"
+python-multipart = "0.0.6"
+tortoise-orm = "0.19.3"
+asyncpg = "0.27.0"
+databases = "0.7.0"
+httpx = "0.24.1"
+
+[tool.poetry.group.dev.dependencies]
+bump2version = "1.0.1"
+pytest = "7.3.2"
+nbconvert = "7.5.0"
+jupyter-contrib-nbextensions = "0.7.0"
+wheel = "0.40.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
