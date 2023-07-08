@@ -213,7 +213,7 @@ async def delete_an_athlete(id: str):
     return Message(message=f"Deleted {id}.")
 
 # Faire un fetch all avec la vue 
-@app.get("/athletebyname",
+@app.get("/search/athlete",
          response_model=List[AthleteView])
 async def get_athletes_by_name(last_name: str):
     last_name = last_name.upper()
