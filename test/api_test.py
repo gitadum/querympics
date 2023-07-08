@@ -8,45 +8,45 @@ import pytest
 # EXEMPLES #
 
 # Result
-lmanaudou2004_swim = {
-                        "id": "S121453",
-                        "games": "S2004",
-                        "sport": "Swimming",
-                        "event": "Swimming Women's 400 metres Freestyle",
-                        "athlete": "506160875731",
-                        "noc": "FRA",
-                        "medal": "G"
+lmanaudou2004_400m = {
+    "id": "S121453",
+    "games": "S2004",
+    "sport": "Swimming",
+    "event": "Swimming Women's 400 metres Freestyle",
+    "athlete": "506160875731",
+    "noc": "FRA",
+    "medal": "G"
                       }
 
-lmanaudou2004_boxing = {
-                        "id": "S121453",
-                        "games": "S2004",
-                        "sport": "Boxing",
-                        "event": "Swimming Women's 400 metres Freestyle",
-                        "athlete": "506160875731",
-                        "noc": "FRA",
-                        "medal": "G"
-                      }
+lmanaudou2012_400m_input = {
+    "season": "Summer",
+    "year": "2012",
+    "sport": "Swimming",
+    "event": "Swimming Women's 400 metres Freestyle",
+    "athlete": "506160875731",
+    "noc": "FRA",
+    "medal": "G"
+                            }
 
-zjakabos_ice_swimming_input = {
-                                "season": "Winter",
-                                "year": "2014",
-                                "sport": "Ice Swimming",
-                                "event": "Ice Swimming Women's 200m Butterfly",
-                                "athlete": "410421217148",
-                                "noc": "HUN",
-                                "medal": "S"
-                                }
+lmanaudou2012_400m_output = {
+    "id": "S237674",
+    "games": "S2012",
+    "sport": "Swimming",
+    "event": "Swimming Women's 400 metres Freestyle",
+    "athlete": "506160875731",
+    "noc": "FRA",
+    "medal": "G"
+                             }
 
-zjakabos_ice_swimming_output = {
-                                "id": "W048565",
-                                "games": "W2014",
-                                "sport": "Ice Swimming",
-                                "event": "Ice Swimming Women's 200m Butterfly",
-                                "athlete": "410421217148",
-                                "noc": "HUN",
-                                "medal": "S"
-                                }
+lmanaudou2012_boxing = {
+    "id": "S237674",
+    "games": "S2012",
+    "sport": "Boxing",
+    "event": "Swimming Women's 400 metres Freestyle",
+    "athlete": "506160875731",
+    "noc": "FRA",
+    "medal": "G"
+                        }
 
 
 def test_greetings():
@@ -58,7 +58,7 @@ def test_greetings():
 @pytest.mark.parametrize(
     ("input_id", "expected"),
     (
-        (lmanaudou2004_swim["id"], lmanaudou2004_swim),
+        (lmanaudou2004_400m["id"], lmanaudou2004_400m),
     )
 )
 def test_get_a_result(input_id, expected):
@@ -71,7 +71,7 @@ def test_get_a_result(input_id, expected):
 @pytest.mark.parametrize(
         ("input_post", "expected"),
         (
-            (zjakabos_ice_swimming_input, zjakabos_ice_swimming_output),
+            (lmanaudou2012_400m_input, lmanaudou2012_400m_output),
         )
 )
 def test_write_a_result(input_post, expected):
@@ -83,24 +83,28 @@ def test_write_a_result(input_post, expected):
         client.delete(f"/result/{response.json()['id']}")
 
 @pytest.mark.parametrize(
-        ("input_id", "input_update", "expected"),
+        ("test_input", "update_params", "expected"),
         (
-            (lmanaudou2004_swim["id"],
+            (lmanaudou2012_400m_input,
              {"sport": "Boxing"},
-             lmanaudou2004_boxing),
+             lmanaudou2012_boxing),
         )
 )
-def test_update_a_result(input_id, input_update, expected):
+def test_update_a_result(test_input, update_params, expected):
     with TestClient(app) as client:
-        original_input = client.get(f"/result/{input_id}").json()
-        response = client.put(f"/result/{input_id}", params=input_update)
+        create_test_item = client.post("/result/new/", params=test_input)
+        assert create_test_item.status_code == 200
+        test_item = create_test_item.json()
+        response = client.put(f"/result/{test_item['id']}",
+                              params=update_params)
         assert response.status_code == 200
         assert response.json() == expected
-        # On rétablit les valeurs modifiées pour le test à leur état d'origine
-        client.put(f"/result/{input_id}", params=original_input)
+        # On supprime l'entrée créée pour le test
+        client.delete(f"/result/{test_item['id']}")
+
 
 def test_delete_a_result():
-    test_item_input = zjakabos_ice_swimming_input
+    test_item_input = lmanaudou2012_400m_input
     with TestClient(app) as client:
         create_test_item = client.post("/result/new", params=test_item_input)
         assert create_test_item.status_code == 200
@@ -108,4 +112,4 @@ def test_delete_a_result():
         response = client.delete(f"/result/{test_item['id']}")
         assert response.status_code == 200
         assert response.json() == {"message": f"Deleted {test_item['id']}."}
-        #assert client.get(f"/result/{test_item['id']}") == 404
+        assert client.get(f"/result/{test_item['id']}").status_code == 404
