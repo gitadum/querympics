@@ -217,7 +217,9 @@ async def delete_an_athlete(id: str):
          response_model=List[AthleteView])
 async def get_athletes_by_name(last_name: str):
     last_name = last_name.upper()
-    query = athlete_view.select().where(athlete_view.c.last_name == last_name)
+    query = (athlete_view
+             .select()
+             .where(athlete_view.c.last_name.like(f"%{last_name}%")))
     all_get = await database.fetch_all(query)
     try:
         assert all_get != []
