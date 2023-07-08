@@ -10,13 +10,13 @@ class Message(BaseModel):
 
 class Result(BaseModel):
 
-    id: str
-    games: str
-    sport: str
-    event: str
-    athlete: str
-    noc: str
-    medal: str
+    id: str = Field(..., max_length=7) # Clé primaire
+    games: str = Field(None, max_length=5)
+    sport: str = Field(None, max_length=32)
+    event: str = Field(None, max_length=128)
+    athlete: str = Field(None, max_length=12)
+    noc: str = Field(None, max_length=3)
+    medal: Optional[str] = Field(None, max_length=1)
 
     class PydanticMeta:
         pass
@@ -27,13 +27,13 @@ class Result(BaseModel):
 
 class ResultIn(BaseModel):
 
-    season: Optional[str]
-    year: Optional[int]
-    sport: Optional[str]
-    event: Optional[str]
-    athlete: Optional[str]
-    noc: Optional[str]
-    medal: Optional[str]
+    season: Optional[str] = Field(None, max_length=6)
+    year: Optional[int] = Field(None)
+    sport: Optional[str] = Field(None, max_length=32)
+    event: Optional[str] = Field(None, max_length=128)
+    athlete: Optional[str] = Field(None, max_length=12)
+    noc: Optional[str] = Field(None, max_length=3)
+    medal: Optional[str] = Field(None, max_length=1)
 
     class PydanticMeta:
         pass
@@ -51,6 +51,12 @@ class Athlete(BaseModel):
     birth_year: Optional[int] = Field(None)
     lattest_noc: str = Field(None, max_length=3)
 
+    class PydanticMeta:
+        pass
+
+    class Config:
+        extra = Extra.forbid
+
 
 class AthleteIn(BaseModel):
 
@@ -59,6 +65,12 @@ class AthleteIn(BaseModel):
     gender: str = Field(None, max_length=1)
     birth_year: Optional[int] = Field(None)
     lattest_noc: Optional[str] = Field(None, max_length=3)
+
+    class PydanticMeta:
+        pass
+
+    class Config:
+        extra = Extra.forbid
 
 
 class AthleteView(BaseModel):
