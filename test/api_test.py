@@ -98,3 +98,14 @@ def test_update_a_result(input_id, input_update, expected):
         assert response.json() == expected
         # On rétablit les valeurs modifiées pour le test à leur état d'origine
         client.put(f"/result/{input_id}", params=original_input)
+
+def test_delete_a_result():
+    test_item_input = zjakabos_ice_swimming_input
+    with TestClient(app) as client:
+        create_test_item = client.post("/result/new", params=test_item_input)
+        assert create_test_item.status_code == 200
+        test_item = create_test_item.json()
+        response = client.delete(f"/result/{test_item['id']}")
+        assert response.status_code == 200
+        assert response.json() == {"message": f"Deleted {test_item['id']}."}
+        #assert client.get(f"/result/{test_item['id']}") == 404
