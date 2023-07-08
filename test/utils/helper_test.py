@@ -29,6 +29,7 @@ def test_give_short_name(input_name, expected):
          "expected"),
     (
         ("Alex", "MORGAN", "F", 1989, "ALEXMORGAN01989"),
+        ("Adrien", "DUMONT", "M", 1996, "ADRIENDUMONT11996")
     )
 )
 def test_give_person_id(input_first_name, input_last_name, input_gender,
@@ -37,6 +38,16 @@ def test_give_person_id(input_first_name, input_last_name, input_gender,
                                        input_last_name,
                                        input_gender,
                                        input_yob) == expected
+
+@pytest.mark.parametrize(
+        ("input_id", "expected"),
+    (
+        ("ZSUZSANNAJAKABOS01988", "410421217148"),
+        ("ADRIENDUMONT11996", "139106765041")
+    )
+)
+def test_get_numeric_id(input_id, expected):
+    assert utils.helper.get_numeric_id(input_id) == expected
 
 @pytest.mark.parametrize(
         ("input_n", "expected"),

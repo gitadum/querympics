@@ -2,10 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional, List
-from tortoise import fields, models
-from tortoise.contrib.pydantic import pydantic_model_creator
-from pydantic import BaseModel, Extra
-from utils.helper import give_games_id
+from pydantic import BaseModel, Extra, Field
 
 class Message(BaseModel):
     message: str = ""
@@ -13,29 +10,30 @@ class Message(BaseModel):
 
 class Result(BaseModel):
 
-    id: str
-    games: str
-    sport: str
-    event: str
-    athlete: str
-    noc: str
-    medal: str
+    id: str = Field(..., max_length=7) # Clé primaire
+    games: str = Field(None, max_length=5)
+    sport: str = Field(None, max_length=32)
+    event: str = Field(None, max_length=128)
+    athlete: str = Field(None, max_length=12)
+    noc: str = Field(None, max_length=3)
+    medal: Optional[str] = Field(None, max_length=1)
 
     class PydanticMeta:
         pass
 
     class Config:
         extra = Extra.forbid
+
 
 class ResultIn(BaseModel):
 
-    season: Optional[str]
-    year: Optional[int]
-    sport: Optional[str]
-    event: Optional[str]
-    athlete: Optional[str]
-    noc: Optional[str]
-    medal: Optional[str]
+    season: Optional[str] = Field(None, max_length=6)
+    year: Optional[int] = Field(None)
+    sport: Optional[str] = Field(None, max_length=32)
+    event: Optional[str] = Field(None, max_length=128)
+    athlete: Optional[str] = Field(None, max_length=12)
+    noc: Optional[str] = Field(None, max_length=3)
+    medal: Optional[str] = Field(None, max_length=1)
 
     class PydanticMeta:
         pass
@@ -43,34 +41,44 @@ class ResultIn(BaseModel):
     class Config:
         extra = Extra.forbid
 
-class Athlete(models.Model):
 
-    id = fields.CharField(pk=True, max_length=12)
-    first_name = fields.CharField(max_length=128, null=True)
-    last_name = fields.CharField(max_length=128, null=True)
-    gender = fields.CharField(max_length=1, null=True)
-    birth_year = fields.SmallIntField(null=True)
-    lattest_noc = fields.CharField(max_length=3, null=True)
+class Athlete(BaseModel):
 
-class AthleteIn(models.Model):
+    id: str = Field(..., max_length=12) # Clé primaire
+    first_name: str = Field(None, max_length=128)
+    last_name: str = Field(None, max_length=128)
+    gender: str = Field(None, max_length=1)
+    birth_year: Optional[int] = Field(None)
+    lattest_noc: str = Field(None, max_length=3)
 
-    id = fields.CharField(pk=True, max_length=12)
-    first_name = fields.CharField(max_length=128, null=True)
-    last_name = fields.CharField(max_length=128, null=True)
-    gender = fields.CharField(max_length=1, null=True)
-    birth_year = fields.SmallIntField(null=True)
-    lattest_noc = fields.CharField(max_length=3, null=True)
+    class PydanticMeta:
+        pass
 
-Athlete_Pydantic = pydantic_model_creator(Athlete, name="Athlete")
-AthleteIn_Pydantic = pydantic_model_creator(Athlete, name="AthleteIn",
-                                            exclude_readonly=True)
+    class Config:
+        extra = Extra.forbid
+
+
+class AthleteIn(BaseModel):
+
+    first_name: str = Field(None, max_length=128)
+    last_name: str = Field(None, max_length=128)
+    gender: str = Field(None, max_length=1)
+    birth_year: Optional[int] = Field(None)
+    lattest_noc: Optional[str] = Field(None, max_length=3)
+
+    class PydanticMeta:
+        pass
+
+    class Config:
+        extra = Extra.forbid
+
 
 class AthleteView(BaseModel):
     id: str
     first_name: str
     last_name: str
-    gender: Optional[str]
+    gender: str
     birth_year: Optional[str]
-    nocs: List[str]
-    disciplines: List[str]
-    n_medals: int
+    nocs: List[Optional[str]]
+    disciplines: List[Optional[str]]
+    n_medals: Optional[int]
