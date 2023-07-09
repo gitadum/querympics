@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import utils.helper
+import app.utils.helper
 import pytest
 
 @pytest.mark.parametrize(
@@ -13,7 +13,7 @@ import pytest
     )
 )
 def test_parse_name(input_name, expected):
-    assert utils.helper.parse_name(input_name) == expected
+    assert app.utils.helper.parse_name(input_name) == expected
 
 @pytest.mark.parametrize(
     ("input_name", "expected"),
@@ -22,7 +22,7 @@ def test_parse_name(input_name, expected):
     )
 )
 def test_give_short_name(input_name, expected):
-    assert utils.helper.give_short_name(input_name) == expected
+    assert app.utils.helper.give_short_name(input_name) == expected
 
 @pytest.mark.parametrize(
         ("input_first_name", "input_last_name", "input_gender", "input_yob",
@@ -34,10 +34,10 @@ def test_give_short_name(input_name, expected):
 )
 def test_give_person_id(input_first_name, input_last_name, input_gender,
                         input_yob, expected):
-    assert utils.helper.give_person_id(input_first_name,
-                                       input_last_name,
-                                       input_gender,
-                                       input_yob) == expected
+    assert app.utils.helper.give_person_id(input_first_name,
+                                           input_last_name,
+                                           input_gender,
+                                           input_yob) == expected
 
 @pytest.mark.parametrize(
         ("input_id", "expected"),
@@ -47,7 +47,7 @@ def test_give_person_id(input_first_name, input_last_name, input_gender,
     )
 )
 def test_get_numeric_id(input_id, expected):
-    assert utils.helper.get_numeric_id(input_id) == expected
+    assert app.utils.helper.get_numeric_id(input_id) == expected
 
 @pytest.mark.parametrize(
         ("input_n", "expected"),
@@ -59,4 +59,4 @@ def test_get_numeric_id(input_id, expected):
     )
 )
 def test_closest_even(input_n, expected):
-    assert utils.helper.closest_even(input_n) == expected
+    assert app.utils.helper.closest_even(input_n) == expected
