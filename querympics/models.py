@@ -86,7 +86,7 @@ class AthleteView(BaseModel):
 
 class RegionView(BaseModel):
     region: str
-    sport: str
-    season: str
-    year: int
+    sport: Optional[str] = "all"
+    season: Optional[str] = "all"
+    year: Optional[int]
     n_medals: Optional[int]

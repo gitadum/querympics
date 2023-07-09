@@ -230,11 +230,26 @@ async def get_athletes_by_name(last_name: str):
 
 @app.get("/search/region",
          response_model=List[RegionView])
-async def get_region_by_name(region: str):
+async def get_region_by_name(region: str, sport: str = None):
     region = region.capitalize()
-    query = (region_view
-             .select()
-             .where(region_view.c.region.like(f"%{region}%")))
+    select = "SELECT region,"
+    groupby = "GROUP BY region"
+    where = f"WHERE region = '{region}'"
+    query = f"""
+    {select}
+    COUNT(n_medals) as n_medals
+    FROM region_view
+    {where}
+    {groupby}
+    """
+    if sport is not None:
+        new_select = select + " sport,"
+        new_groupby = groupby + ", sport"
+        query_and = f"AND sport = '{sport}'"
+        new_where = where + " " + query_and
+        query = query.replace(select, new_select)
+        query = query.replace(groupby, new_groupby)
+        query = query.replace(where, new_where)
     all_get = await database.fetch_all(query)
     try:
         assert all_get != []
