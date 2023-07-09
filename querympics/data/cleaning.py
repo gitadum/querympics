@@ -3,11 +3,11 @@
 
 import os
 import pandas as pd
-from utils.helper import parse_name, closest_even
-from utils.helper import give_person_id, give_games_id, get_numeric_id
+from querympics.utils.helper import parse_name, closest_even
+from querympics.utils.helper import give_person_id, give_games_id, get_numeric_id
 
 # Lecture des données
-os.chdir("./app/data/files/")
+os.chdir("./querympics/data/files/")
 summer = pd.read_csv("Athletes_summer_games.csv", index_col=0)
 winter = pd.read_csv("Athletes_winter_games.csv", index_col=0)
 region = pd.read_csv("regions.csv", index_col=0)

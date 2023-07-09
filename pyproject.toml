@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "querympics"
-version = "0.2.2"
+version = "0.3.0"
 description = "Trouvez des infos sur les JO grâce à Querympics"
 authors = ["Adrien Dumont <dev@adum.io>"]
 license = "GPL-3.0"

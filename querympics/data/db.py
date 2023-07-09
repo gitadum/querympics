@@ -4,14 +4,14 @@
 import os
 import psycopg2
 from sqlalchemy import create_engine
-from database import db_host, db_name, db_usr, db_pwd, db_port
-from utils import database as dbutils
+from querympics.database import db_host, db_name, db_usr, db_pwd, db_port
+from querympics.utils import database as dbutils
 
 def main():
     engine_path = f"postgresql+psycopg2://{db_usr}:{db_pwd}@{db_host}/{db_name}"
     engine = create_engine(engine_path)
 
-    data_dir = "./app/data/"
+    data_dir = "./querympics/data/"
     os.chdir(data_dir)
 
     CREATE_ATHLETE = True
