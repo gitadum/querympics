@@ -1,4 +1,4 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = "0.4.0-alpha"
+__version__ = "0.4.0-beta"
