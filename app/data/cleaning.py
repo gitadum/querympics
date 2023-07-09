@@ -58,8 +58,18 @@ df.drop(columns=["intAge"], inplace=True)
 # Année d'olympiade
 df["Year"] = df.Year.astype("Int64")
 
-# Calcul de l'année de naissance
+# Pour calculer correctement l'année de naissance d'un participant aux JO
+# On doit corriger l'année des derniers JO d'été de Tokyo
+# Initialement prévus pour 2020, ils ont été reporté en 2021
+# en raison de la pandémie de CoVid-19 survenue en 2020
+df.loc[(df["City"] == "Tokyo") & (df["Year"] == 2020), "Year"] = 2021
+
+# Calcul par participation de l'année de naissance approximative du participant
 df["BirthYear"] = df["Year"] - df["Age"]
+
+# On peut rétablir l'année des derniers JO de Tokyo à 2020
+# Maintenant qu'une année de naissance approximative a été calculée
+df.loc[(df["City"] == "Tokyo") & (df["Year"] == 2021), "Year"] = 2020
 
 # Arrondi à l'année paire la plus proche
 # Pour donner une période de 2 ans qui donne le droit aux erreurs
