@@ -82,3 +82,11 @@ class AthleteView(BaseModel):
     nocs: List[Optional[str]]
     disciplines: List[Optional[str]]
     n_medals: Optional[int]
+
+
+class RegionView(BaseModel):
+    region: str
+    sport: Optional[str] = "all"
+    season: Optional[str] = "all"
+    year: Optional[int]
+    n_medals: Optional[int]

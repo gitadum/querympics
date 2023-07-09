@@ -56,6 +56,17 @@ athlete_view = sqlalchemy.Table(
     sqlalchemy.Column("n_medals", sqlalchemy.Integer)
     )
 
+# RegionView
+region_view = sqlalchemy.Table(
+    "region_view",
+    metadata,
+    sqlalchemy.Column("region", sqlalchemy.String(32)),
+    sqlalchemy.Column("sport", sqlalchemy.String(32)),
+    sqlalchemy.Column("season", sqlalchemy.String(6)),
+    sqlalchemy.Column("year", sqlalchemy.Integer),
+    sqlalchemy.Column("n_medals", sqlalchemy.Integer)
+)
+
 def main():
     engine = sqlalchemy.create_engine(DATABASE_URL)
     metadata.create_all(engine)

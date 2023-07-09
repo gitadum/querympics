@@ -8,23 +8,23 @@ from typing import List
 try:
     from .models import Result, ResultIn
     from .models import Athlete, AthleteIn
-    from .models import AthleteView
+    from .models import AthleteView, RegionView
     from .models import Message
     from .database import database, db_host
-    from .database import result, athlete, athlete_view
+    from .database import result, athlete, athlete_view, region_view
     from .utils.helper import give_games_id, give_person_id
     from .utils.helper import closest_even, get_numeric_id
 except ImportError:
     from models import Result, ResultIn
     from models import Athlete, AthleteIn
-    from models import AthleteView
+    from models import AthleteView, RegionView
     from models import Message
     from database import database, db_host
-    from database import result, athlete, athlete_view
+    from database import result, athlete, athlete_view, region_view
     from utils.helper import give_games_id, give_person_id
     from utils.helper import closest_even, get_numeric_id
 
-app = FastAPI(title="Querympics", version="0.3.0")
+app = FastAPI(title="Querympics", version="0.4.0-beta")
 
 @app.on_event("startup")
 async def connect():
@@ -212,7 +212,8 @@ async def delete_an_athlete(id: str):
     await database.execute(query)
     return Message(message=f"Deleted {id}.")
 
-# Faire un fetch all avec la vue 
+## # INTERACTIONS AVEC LES VUES # ##
+
 @app.get("/search/athlete",
          response_model=List[AthleteView])
 async def get_athletes_by_name(last_name: str):
@@ -225,6 +226,35 @@ async def get_athletes_by_name(last_name: str):
         assert all_get != []
     except:
         raise HTTPException(404, f"No athlete found for the name '{last_name}'")
+    return all_get
+
+@app.get("/search/region",
+         response_model=List[RegionView])
+async def get_region_by_name(region: str, sport: str = None):
+    region = region.capitalize()
+    select = "SELECT region,"
+    groupby = "GROUP BY region"
+    where = f"WHERE region = '{region}'"
+    query = f"""
+    {select}
+    COUNT(n_medals) as n_medals
+    FROM region_view
+    {where}
+    {groupby}
+    """
+    if sport is not None:
+        new_select = select + " sport,"
+        new_groupby = groupby + ", sport"
+        query_and = f"AND sport = '{sport}'"
+        new_where = where + " " + query_and
+        query = query.replace(select, new_select)
+        query = query.replace(groupby, new_groupby)
+        query = query.replace(where, new_where)
+    all_get = await database.fetch_all(query)
+    try:
+        assert all_get != []
+    except:
+        raise HTTPException(404, f"No region found for the name '{region}'")
     return all_get
 
 if __name__ == "__main__":
