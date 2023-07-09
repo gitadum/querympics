@@ -9,9 +9,9 @@ with open("README.md", "r") as f:
 setup(
     name='querympics',
     description="Une API pour trouver des infos sur les jeux olympiques",
-    package_dir={"": "app"},
+    package_dir={"": "querympics"},
     version="0.3.0-alpha",
-    packages=find_packages(where="app"),
+    packages=find_packages(where="querympics"),
     long_description=long_description,
     long_description_content_type="text/markdown",
     link="https://github.com/gitadum/querympics",

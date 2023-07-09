@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from fastapi.testclient import TestClient
-from app.api import app
+from querympics.api import app
 import pytest
 
 # EXEMPLES #
