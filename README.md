@@ -36,9 +36,9 @@ pip install .
 1. Installer PostGreSQL
 2. Paramétrer l'utilisateur et le mot de passe
 3. Recréer les tables et chargez les
-données de base grâce au script `querympics/data/db.py`
+données de base grâce au script `querympics/data/load.py`
 ```bash
-python querympics/data/db.py
+python querympics/data/load.py
 ```
 
 ## Utilisation
@@ -46,7 +46,7 @@ python querympics/data/db.py
 ### Lancement
 Dans un terminal, depuis le dossier d'installation,
 lancer la commande :
-```
+```bash
 uvicorn querympics.api:app
 ```
 ### Requêtes
