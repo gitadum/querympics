@@ -15,17 +15,19 @@ def main():
     os.chdir(data_dir)
 
     CREATE_ATHLETE = True
-    TRUNCATE_ATHLETE = False
+    TRUNCATE_ATHLETE = True
     FILL_ATHLETE = True
     CREATE_GAMES = True
-    TRUNCATE_GAMES = False
+    TRUNCATE_GAMES = True
     FILL_GAMES = True
     CREATE_REGION = True
-    TRUNCATE_REGION = False
+    TRUNCATE_REGION = True
     FILL_REGION = True
     CREATE_RESULT = True
-    TRUNCATE_RESULT = False
+    TRUNCATE_RESULT = True
     FILL_RESULT = True
+    CREATE_ATHLETE_VIEW = True
+    CREATE_REGION_VIEW = True
 
     # Connexion à la base de données PostGre
     connector = psycopg2.connect(host=db_host, dbname=db_name,
@@ -97,6 +99,16 @@ def main():
                                     verbose=True,
                                     fill_by_chuncks=True,
                                     n_chunk=10000)
+    
+    if CREATE_ATHLETE_VIEW:
+        create_athlete_view = "./base/athlete.view.sql"
+        dbutils.create_table("athlete_view", create_athlete_view,
+                             connector, cursor)
+
+    if CREATE_REGION_VIEW:
+        create_region_view = "./base/region.view.sql"
+        dbutils.create_table("region_view", create_region_view,
+                             connector, cursor)
 
     cursor.close()
     connector.close()
