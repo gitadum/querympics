@@ -258,4 +258,4 @@ async def get_region_by_name(region: str, sport: str = None):
     return all_get
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=db_host, port=8000)
+    uvicorn.run(app, host="localhost", port=8000)
