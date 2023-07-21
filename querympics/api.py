@@ -24,7 +24,7 @@ except ImportError:
     from utils.helper import give_games_id, give_person_id
     from utils.helper import closest_even, get_numeric_id
 
-app = FastAPI(title="Querympics", version="0.4.0")
+app = FastAPI(title="Querympics", version="0.5.0-beta")
 
 @app.on_event("startup")
 async def connect():
@@ -258,4 +258,4 @@ async def get_region_by_name(region: str, sport: str = None):
     return all_get
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=db_host, port=8000)
+    uvicorn.run(app, host="localhost", port=8000)
