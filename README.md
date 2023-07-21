@@ -1,6 +1,6 @@
 # Querympics
 
-version de l'API : `0.5.0-beta` 
+version de l'API : `0.5.0-beta`
 
 Une API pour trouver des infos sur les jeux olympiques
 * un résultat sportif donné
@@ -11,17 +11,35 @@ Une API pour trouver des infos sur les jeux olympiques
 
 ### Installer Querympics
 
-version de Python : `3.8.x`
+#### Prérequis
+
+Pour installer querympics il est nécessaire de disposer des outils suivants :
+- git
+- docker
+- docker-compose ([doc d'installation](https://docs.docker.com/compose/install/))
+
+#### Pas à pas
+
+```bash
+git clone https://github.com/gitadum/querympics.git
+cd querympics
+docker-compose -f docker-compose.yaml --project-name 'querympics' up
+```
+
+### Pour le développement
+
+#### Prérequis
+
+Pour contribuer au développement de querympics, il est nécessaire de disposer des outils suivants :
+- git
+- python (version `3.8`)
+
+#### Pas à pas 
 
 ```bash
 git clone https://github.com/gitadum/querympics.git
 cd querympics
 pip install -r requirements.txt
-```
-
-*N.B. : pour le développement lancer aussi*
-*la commande suivante depuis le dossier projet :*
-```bash
 pip install -r requirements.dev.txt
 ```
 
@@ -31,24 +49,15 @@ avec la commande suivante (depuis le dossier projet):
 pip install .
 ```
 
-### Recréer la base de données
-
-1. Installer PostGreSQL
-2. Paramétrer l'utilisateur et le mot de passe
-3. Recréer les tables et chargez les
-données de base grâce au script `querympics/data/load.py`
-```bash
-python querympics/data/load.py
-```
-
 ## Utilisation
 
 ### Lancement
 Dans un terminal, depuis le dossier d'installation,
 lancer la commande :
 ```bash
-uvicorn querympics.api:app
+docker-compose up
 ```
+
 ### Requêtes
 
 #### Pour un athlète
