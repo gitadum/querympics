@@ -10,7 +10,7 @@ setup(
     name='querympics',
     description="Une API pour trouver des infos sur les jeux olympiques",
     package_dir={"": "querympics"},
-    version="0.5.0-alpha",
+    version="0.5.0-beta",
     packages=find_packages(where="querympics"),
     long_description=long_description,
     long_description_content_type="text/markdown",

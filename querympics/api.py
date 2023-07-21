@@ -24,7 +24,7 @@ except ImportError:
     from utils.helper import give_games_id, give_person_id
     from utils.helper import closest_even, get_numeric_id
 
-app = FastAPI(title="Querympics", version="0.5.0-alpha")
+app = FastAPI(title="Querympics", version="0.5.0-beta")
 
 @app.on_event("startup")
 async def connect():
