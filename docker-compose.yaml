@@ -1,20 +1,5 @@
 version: '3'
 services:
-  api:
-    build:
-      dockerfile: Dockerfile
-      context: .
-    volumes:
-      - ./querympics/:/querympics/
-    command: uvicorn querympics.api:app --reload --workers 1 --host 0.0.0.0 --port 8000
-#    env_file:
-#      - .venv
-    ports:
-      - 8000:8000
-    depends_on:
-      - db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   db:
     image: postgres:12-alpine
     volumes:
@@ -27,5 +12,20 @@ services:
       POSTGRES_DB: olympics
       POSTGRES_USER: sqladum
       POSTGRES_PASSWORD: dummypassw0rd
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - ./querympics/:/querympics/
+    command: uvicorn querympics.api:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    #env_file:
+    #  - .venv
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 volumes:
     postgres_data:
